@@ -1,0 +1,55 @@
+version: '3'
+services:
+  postgres-product:
+    image: postgres:latest
+    container_name: postgres-product
+    environment:
+      POSTGRES_DB: product_service
+      POSTGRES_PASSWORD: secret
+      POSTGRES_USER: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-product-data:/var/lib/postgresql/data
+    networks:
+      - my-network
+    restart: always
+
+  postgres-order:
+    image: postgres:latest
+    container_name: postgres-order
+    environment:
+      POSTGRES_DB: order_service
+      POSTGRES_PASSWORD: secret
+      POSTGRES_USER: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-order-data:/var/lib/postgresql/data
+    networks:
+      - my-network
+    restart: always
+
+  postgres-inventory:
+    image: postgres:latest
+    container_name: postgres-inventory
+    environment:
+      POSTGRES_DB: inventory_service
+      POSTGRES_PASSWORD: secret
+      POSTGRES_USER: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres-inventory-data:/var/lib/postgresql/data
+    networks:
+      - my-network
+    restart: always
+
+
+networks:
+  my-network:
+
+volumes:
+  postgres-product-data:
+  postgres-order-data:
+  postgres-inventory-data:
