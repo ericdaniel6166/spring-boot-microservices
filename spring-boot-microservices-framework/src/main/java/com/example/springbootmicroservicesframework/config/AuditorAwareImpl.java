@@ -1,4 +1,4 @@
-package config;
+package com.example.springbootmicroservicesframework.config;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -6,7 +6,7 @@ import org.springframework.data.domain.AuditorAware;
 
 import java.util.Optional;
 
-public class AuditorAwareImpl implements AuditorAware<String> {
+public final class AuditorAwareImpl implements AuditorAware<String> {
 
     private static final String APPLICATION_NAME_DEFAULT = "SYSTEM";
 
