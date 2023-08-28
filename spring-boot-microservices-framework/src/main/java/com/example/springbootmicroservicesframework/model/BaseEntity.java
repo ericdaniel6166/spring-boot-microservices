@@ -1,4 +1,4 @@
-package model;
+package com.example.springbootmicroservicesframework.model;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
