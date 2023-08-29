@@ -1,12 +1,12 @@
 spring:
-  application:
-    name: sm-system
   flyway:
     baseline-on-migrate: true
     baseline-version: 0.0
     locations: classpath:db/migration/
     validate-on-migrate: true
+    enabled: true
+    table: schema_history
 
 logging:
   level:
-    root: INFO # Adjust log level as needed
+    root: INFO
