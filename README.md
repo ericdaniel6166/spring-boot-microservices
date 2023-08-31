@@ -4,30 +4,40 @@
 - Java 17
 - Docker environment: Docker
 - Microservice repositories
-  - inventory-service : https://github.com/ericdaniel6166/inventory-service
-  - order-service : https://github.com/ericdaniel6166/order-service
-  - product-service : https://github.com/ericdaniel6166/product-service
   - spring-boot-microservices : https://github.com/ericdaniel6166/spring-boot-microservices
+  - discovery-server : https://github.com/ericdaniel6166/discovery-server
+  - api-gateway : https://github.com/ericdaniel6166/api-gateway
+  - product-service : https://github.com/ericdaniel6166/product-service
+  - order-service : https://github.com/ericdaniel6166/order-service
+  - inventory-service : https://github.com/ericdaniel6166/inventory-service
+- Maven 
 ```bash
 .
-├── inventory-service
-├── order-service
+├── spring-boot-microservices
+├── discovery-server
+├── api-gateway
 ├── product-service
-└── spring-boot-microservices
+├── order-service
+└── inventory-service
 ```
 ## Environment setup
+
+```bash
+# Docker compose for local DB (run in spring-boot-microservices location)
+docker compose up
+
+# Build Maven project for all projects
+mvn clean install -DskipTests
+```
 
 ## Installation
 
 ## Running the app
 
-- Non Docker / standalone environment
-- Docker environment: In spring-boot-microservices location
 ```bash
-# Build image (run command in microservice-service directory)
+# Start discovery-server, api-gateway 
 
-# Docker compose for dev environment (run in spring-boot-microservices location)
-docker compose up
+# Start microservice   
 ```
 
 ## Test
