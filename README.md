@@ -24,7 +24,7 @@
 ## Environment setup
 
 ```bash
-# Docker compose for local DB, keycloak (run in spring-boot-microservices location)
+# Docker compose for local DB, keycloak, zipkin (run in spring-boot-microservices location)
 docker compose up
 
 # Build Maven project for all projects

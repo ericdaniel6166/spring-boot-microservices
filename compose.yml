@@ -46,14 +46,20 @@ services:
     restart: always
 
   keycloak:
-    container_name: keycloak
     image: quay.io/keycloak/keycloak:22.0.1
+    container_name: keycloak
     command: [ "start-dev" ]
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
     ports:
       - "8080:8080"
+
+  zipkin:
+    image: openzipkin/zipkin:latest
+    container_name: zipkin
+    ports:
+      - "9411:9411"
 
 networks:
   my-network:
