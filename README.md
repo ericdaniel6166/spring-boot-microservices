@@ -2,6 +2,7 @@
 
 ## Prerequisite
 - Java 17
+- Maven
 - Docker
 - Microservice repositories
   - spring-boot-microservices : https://github.com/ericdaniel6166/spring-boot-microservices
@@ -10,7 +11,7 @@
   - product-service : https://github.com/ericdaniel6166/product-service
   - order-service : https://github.com/ericdaniel6166/order-service
   - inventory-service : https://github.com/ericdaniel6166/inventory-service
-- Maven 
+
 ```bash
 .
 ├── spring-boot-microservices
