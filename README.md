@@ -2,7 +2,7 @@
 
 ## Prerequisite
 - Java 17
-- Docker environment: Docker
+- Docker
 - Microservice repositories
   - spring-boot-microservices : https://github.com/ericdaniel6166/spring-boot-microservices
   - discovery-server : https://github.com/ericdaniel6166/discovery-server
@@ -23,7 +23,7 @@
 ## Environment setup
 
 ```bash
-# Docker compose for local DB (run in spring-boot-microservices location)
+# Docker compose for local DB, keycloak (run in spring-boot-microservices location)
 docker compose up
 
 # Build Maven project for all projects
