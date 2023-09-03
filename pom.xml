@@ -24,7 +24,9 @@
 
     <properties>
         <java.version>17</java.version>
+        <modelmapper.version>2.4.5</modelmapper.version>
         <spring.cloud-version>2021.0.8</spring.cloud-version>
+
     </properties>
 
     <dependencyManagement>
