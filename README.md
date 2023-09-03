@@ -11,6 +11,7 @@
   - product-service : https://github.com/ericdaniel6166/product-service
   - order-service : https://github.com/ericdaniel6166/order-service
   - inventory-service : https://github.com/ericdaniel6166/inventory-service
+  - notification-service : https://github.com/ericdaniel6166/notification-service
 
 ```bash
 .
@@ -19,7 +20,8 @@
 ├── api-gateway
 ├── product-service
 ├── order-service
-└── inventory-service
+├── inventory-service
+└── notification-service
 ```
 ## Environment setup
 

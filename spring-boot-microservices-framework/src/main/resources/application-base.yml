@@ -11,7 +11,14 @@ spring:
   sleuth:
     sampler:
       probability: 1.0
-
+  kafka:
+    bootstrap-servers: localhost:9092
+    template:
+      default-topic: notificationTopic
+    consumer:
+      group-id: notificationId
+      properties:
+        concurrency: 3
 management:
   health:
     circuitbreakers:
