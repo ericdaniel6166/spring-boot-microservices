@@ -41,18 +41,24 @@
 ```
 ## Environment setup
 
-```bash
-# Build all microservices and Docker compose up for local DB, keycloak, zipkin, zookeeper, kafka
-make up
-```
-
 ## Running the app
-
+- Docker environment
 ```bash
+# Docker compose up
+make up
+
+# Docker compose down
+make down
+```
+- Non Docker / standalone environment
+```bash
+# Docker compose up
+make local-up
+
 # Start discovery-server, api-gateway 
 
 # Start microservice   
 
 # Docker compose down
-make down
+make local-down
 ```
