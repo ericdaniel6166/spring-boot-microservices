@@ -1,0 +1,212 @@
+version: '3'
+services:
+  postgres-order:
+    container_name: postgres-order
+    image: postgres:14.9-alpine
+    environment:
+      POSTGRES_DB: order_service
+      POSTGRES_PASSWORD: secret
+      POSTGRES_USER: postgres
+    ports:
+      - "5433:5432"
+    expose:
+      - "5433"
+    volumes:
+      - postgres-order-data:/var/lib/postgresql/data
+    networks:
+      - my-network
+    restart: always
+
+  postgres-product:
+    container_name: postgres-product
+    image: postgres:14.9-alpine
+    environment:
+      POSTGRES_DB: product_service
+      POSTGRES_PASSWORD: secret
+      POSTGRES_USER: postgres
+    ports:
+      - "5432:5432"
+    expose:
+      - "5432"
+    volumes:
+      - postgres-product-data:/var/lib/postgresql/data
+    networks:
+      - my-network
+    restart: always
+
+  postgres-inventory:
+    container_name: postgres-inventory
+    image: postgres:14.9-alpine
+    environment:
+      POSTGRES_DB: inventory_service
+      POSTGRES_PASSWORD: secret
+      POSTGRES_USER: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres-inventory-data:/var/lib/postgresql/data
+    networks:
+      - my-network
+    restart: always
+
+  order-service:
+    container_name: order-service
+    build:
+      context: ../order-service
+      dockerfile: Dockerfile
+    environment:
+        SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8082:8082"
+    expose:
+      - "8082"
+    networks:
+      - my-network
+    depends_on:
+      - postgres-order
+      - discovery-server
+      - api-gateway
+      - broker
+#      - zipkin
+
+  product-service:
+    container_name: product-service
+    build:
+      context: ../product-service
+      dockerfile: Dockerfile
+    environment:
+        SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8081:8081"
+    expose:
+      - "8081"
+    networks:
+      - my-network
+    depends_on:
+      - postgres-product
+      - discovery-server
+      - api-gateway
+      - broker
+#      - zipkin
+
+  inventory-service:
+    container_name: inventory-service
+    build:
+      context: ../inventory-service
+      dockerfile: Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8083:8083"
+    expose:
+      - "8083"
+    networks:
+      - my-network
+    depends_on:
+      - postgres-inventory
+      - discovery-server
+      - api-gateway
+#      - broker
+#      - zipkin
+
+  notification-service:
+    container_name: notification-service
+    build:
+      context: ../notification-service
+      dockerfile: Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8084:8084"
+    expose:
+      - "8084"
+    networks:
+      - my-network
+    depends_on:
+      - discovery-server
+      - api-gateway
+      - broker
+#      - zipkin
+
+  discovery-server:
+    container_name: discovery-server
+    build:
+      context: ../discovery-server
+      dockerfile: Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8761:8761"
+    networks:
+      - my-network
+    expose:
+      - "8761"
+#    depends_on:
+#      - zipkin
+
+  api-gateway:
+    container_name: api-gateway
+    build:
+      context: ../api-gateway
+      dockerfile: Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8181:8181"
+    expose:
+      - "8181"
+    networks:
+      - my-network
+    depends_on:
+      - discovery-server
+#      - zipkin
+#      - keycloak
+
+#  keycloak:
+#    image: quay.io/keycloak/keycloak:22.0.1
+#    container_name: keycloak
+#    command: [ "start-dev", "--import-realm" ]
+#    environment:
+#      KEYCLOAK_ADMIN: admin
+#      KEYCLOAK_ADMIN_PASSWORD: admin
+#    ports:
+#      - "8080:8080"
+#    volumes:
+#      - ./realms/:/opt/keycloak/data/import/
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.0.1
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    networks:
+      - my-network
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  broker:
+    image: confluentinc/cp-kafka:7.0.1
+    container_name: broker
+    ports:
+      - "9092:9092"
+    networks:
+      - my-network
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+
+networks:
+  my-network:
+
+volumes:
+  postgres-product-data:
+  postgres-order-data:
+  postgres-inventory-data:

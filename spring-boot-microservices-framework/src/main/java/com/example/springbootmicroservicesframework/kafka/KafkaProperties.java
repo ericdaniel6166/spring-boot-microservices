@@ -1,20 +1,19 @@
-package com.example.springbootmicroservicesframework.config;
+package com.example.springbootmicroservicesframework.kafka;
 
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Data
-public class AppKafkaProperties {
+@ConditionalOnProperty(prefix = "spring.kafka", name = "enabled")
+public class KafkaProperties {
 
-    @Value("${spring.kafka.bootstrap-servers:localhost:9092}")
+    @Value("${spring.kafka.bootstrap-servers}")
     String bootstrapServers;
-
-    @Value(value = "${spring.kafka.consumer.group-id}:notificationId")
-    String groupId;
 
 }

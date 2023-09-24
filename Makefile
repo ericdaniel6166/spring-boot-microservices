@@ -1,84 +1,50 @@
-.PHONY: docker-up maven-install maven-package maven-clean up down
+.PHONY: remove_images docker-down docker-compose-down docker-up maven-install maven-package maven-clean local-up local-down
 
-down: docker-down
-	echo "down"
+IMAGE_PATTERNS = order-service inventory-service product-service notification-service api-gateway discovery-server
 
 up: maven-install docker-up
-	echo "up"
+
+down: docker-down
 
 docker-up:
-	echo "Preparing DB, keycloak, zipkin, kafka"
-	docker compose up -d
+	docker compose -f ./compose.docker.yml up -d
 
-docker-down:
-	echo "Removing DB, keycloak, zipkin, kafka"
-	docker compose down -v
+docker-down: docker-compose-down remove_images
+
+docker-compose-down:
+	docker compose -f ./compose.docker.yml down -v
+
+remove_images:
+	@for pattern in ${IMAGE_PATTERNS}; do \
+		echo "Checking for images matching pattern: $$pattern"; \
+		if docker images | grep -q "$$pattern"; then \
+		  echo "Removing images matching pattern: $$pattern"; \
+		  docker rmi $$(docker images | grep "$$pattern" | awk '{print $$3}'); \
+		fi \
+	done
+
+local-up:
+	docker compose -f ./compose.local.yml up -d
+
+local-down:
+	docker compose -f ./compose.local.yml down -v
 
 maven-install:
 	echo "Maven install"
-	mvn clean install -Dmaven.test.skip
-	echo "api-gateway"
+	./mvnw clean install -Dmaven.test.skip
 	cd ../api-gateway; \
-	mvn clean install -Dmaven.test.skip
-	echo "discovery-server"
+	./mvnw clean install -Dmaven.test.skip
 	cd ../discovery-server; \
-	mvn clean install -Dmaven.test.skip
-	echo "inventory-service"
+	./mvnw clean install -Dmaven.test.skip
 	cd ../inventory-service; \
-	mvn clean install -Dmaven.test.skip
-	echo "notification-service"
+	./mvnw clean install -Dmaven.test.skip
 	cd ../notification-service; \
-	mvn clean install -Dmaven.test.skip
-	echo "order-service"
+	./mvnw clean install -Dmaven.test.skip
 	cd ../order-service; \
-	mvn clean install -Dmaven.test.skip
-	echo "product-service"
+	./mvnw clean install -Dmaven.test.skip
 	cd ../product-service; \
-	mvn clean install -Dmaven.test.skip
+	./mvnw clean install -Dmaven.test.skip
 
-maven-package:
-	echo "Maven package"
-	mvn clean package -Dmaven.test.skip
-	echo "api-gateway"
-	cd ../api-gateway; \
-	mvn clean package -Dmaven.test.skip
-	echo "discovery-server"
-	cd ../discovery-server; \
-	mvn clean package -Dmaven.test.skip
-	echo "inventory-service"
-	cd ../inventory-service; \
-	mvn clean package -Dmaven.test.skip
-	echo "notification-service"
-	cd ../notification-service; \
-	mvn clean package -Dmaven.test.skip
-	echo "order-service"
-	cd ../order-service; \
-	mvn clean package -Dmaven.test.skip
-	echo "product-service"
-	cd ../product-service; \
-	mvn clean package -Dmaven.test.skip
-
-maven-clean:
-	echo "Maven clean"
-	mvn clean -Dmaven.test.skip
-	echo "api-gateway"
-	cd ../api-gateway; \
-	mvn clean -Dmaven.test.skip
-	echo "discovery-server"
-	cd ../discovery-server; \
-	mvn clean -Dmaven.test.skip
-	echo "inventory-service"
-	cd ../inventory-service; \
-	mvn clean -Dmaven.test.skip
-	echo "notification-service"
-	cd ../notification-service; \
-	mvn clean -Dmaven.test.skip
-	echo "order-service"
-	cd ../order-service; \
-	mvn clean -Dmaven.test.skip
-	echo "product-service"
-	cd ../product-service; \
-	mvn clean -Dmaven.test.skip
 
 
 
