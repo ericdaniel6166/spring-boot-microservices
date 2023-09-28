@@ -1,21 +1,11 @@
 package com.example.springbootmicroservicesframework.exception;
 
-public class BadRequestException extends Exception {
+import org.springframework.http.HttpStatus;
 
-    public BadRequestException() {
-    }
+public class BadRequestException extends AppException {
 
     public BadRequestException(String message) {
-        super(message);
-    }
-
-    public BadRequestException(Throwable cause) {
-        super(cause);
-    }
-
-    @Override
-    public String toString() {
-        return "BadRequestException: "+getMessage();
+        super(HttpStatus.BAD_REQUEST.name(), message);
     }
 
 }
