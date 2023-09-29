@@ -11,24 +11,29 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class EnumValidator implements ConstraintValidator<ValidEnum, CharSequence> {
+public class EnumValidator implements ConstraintValidator<ValidEnum, String> {
 
     final ValidationUtils validationUtils;
     List<String> valueList;
+    boolean caseSensitive;
 
     @Override
     public void initialize(ValidEnum constraintAnnotation) {
         valueList = Stream.of(constraintAnnotation.enumClass().getEnumConstants())
                 .map(Enum::name)
                 .toList();
+        caseSensitive = constraintAnnotation.caseSensitive();
     }
 
     @Override
-    public boolean isValid(CharSequence s, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
         if (StringUtils.isBlank(s)) {
             return true;
         }
-        boolean isValid = valueList.contains(s.toString());
+        boolean isValid = valueList.contains(s);
+        if (!caseSensitive) {
+            isValid = valueList.contains(s.toUpperCase());
+        }
         if (!isValid) {
             validationUtils.addViolation(constraintValidatorContext,
                     MessageConstant.MSG_ERR_COMMON_TYPE_MISMATCH_ENUMS,

@@ -1,8 +1,6 @@
-package com.example.springbootmicroservicesframework.dto;
+package com.example.springbootmicroservicesframework.pagination;
 
-import com.example.springbootmicroservicesframework.enums.SortDirection;
 import com.example.springbootmicroservicesframework.utils.Const;
-import com.example.springbootmicroservicesframework.validation.ValidEnum;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,25 +8,25 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AppPageRequest {
+public class MultiSortPageRequest {
 
-    @Min(value = Const.LONG_ZERO)
-    Integer pageNumber;
+    @Min(value = Const.LONG_ONE)
+    Integer pageNumber = Const.INTEGER_ZERO;
 
-    @Min(value = Const.LONG_ZERO)
+    @Min(value = Const.DEFAULT_PAGE_SIZE)
     @Max(value = Const.MAXIMUM_PAGE_SIZE)
-    Integer pageSize;
+    Integer pageSize = Const.DEFAULT_PAGE_SIZE;
 
-    String sortColumn;
-
-    @ValidEnum(enumClass = SortDirection.class)
-    String sortDirection;
+    @Valid
+    List<AppSortOrder> orderList;
 }

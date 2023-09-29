@@ -68,17 +68,20 @@ public class RestExceptionHandler {
             try {
                 model = messageSource.getMessage(key, null, LocaleContextHolder.getLocale());
                 break;
-            } catch (NoSuchMessageException ignored) {}
+            } catch (NoSuchMessageException ignored) {
+            }
         }
         if (StringUtils.isBlank(model)) {
-            model = keyClass;
+//            model = keyClass; //for local testing
+            model = messageSource.getMessage(Const.GENERAL_FIELD, null, LocaleContextHolder.getLocale());
         }
         String messageTemplate = null;
         for (String errorCode : fieldError.getCodes()) {
             try {
                 messageTemplate = messageSource.getMessage(errorCode, null, LocaleContextHolder.getLocale());
                 break;
-            } catch (NoSuchMessageException ignored) {}
+            } catch (NoSuchMessageException ignored) {
+            }
         }
         if (StringUtils.isBlank(messageTemplate)) {
             messageTemplate = fieldError.getDefaultMessage();
