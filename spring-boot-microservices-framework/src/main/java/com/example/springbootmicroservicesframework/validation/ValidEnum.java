@@ -18,6 +18,8 @@ public @interface ValidEnum {
 
     Class<? extends Enum<?>> enumClass();
 
+    boolean caseSensitive() default true;
+
     String message() default "{typeMismatch.enums}";
 
     Class<?>[] groups() default {};
