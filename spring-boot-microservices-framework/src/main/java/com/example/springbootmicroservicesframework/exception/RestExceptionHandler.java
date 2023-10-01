@@ -72,8 +72,8 @@ public class RestExceptionHandler {
             }
         }
         if (StringUtils.isBlank(model)) {
-//            model = keyClass; //for local testing
-            model = messageSource.getMessage(Const.GENERAL_FIELD, null, LocaleContextHolder.getLocale());
+            model = keyClass; //delete //for local testing
+//            model = messageSource.getMessage(Const.GENERAL_FIELD, null, LocaleContextHolder.getLocale());
         }
         String messageTemplate = null;
         for (String errorCode : fieldError.getCodes()) {

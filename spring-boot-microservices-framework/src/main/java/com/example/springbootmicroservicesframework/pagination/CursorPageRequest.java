@@ -8,30 +8,50 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AppPageRequest {
-
-    @Min(value = Const.ONE)
-    Integer pageNumber = Const.ONE;
+public class CursorPageRequest {
 
     @Min(value = Const.DEFAULT_PAGE_SIZE)
     @Max(value = Const.MAXIMUM_PAGE_SIZE)
     Integer pageSize = Const.DEFAULT_PAGE_SIZE;
 
-    //    @Size(max = 2) //delete //for local test
-    @Size(max = Const.MAXIMUM_SORT_COLUMN)
-    String[] sortColumn = new String[]{Const.ID};
+    String sortColumn = Const.ID;
 
     @ValidEnum(enumClass = Sort.Direction.class, caseSensitive = false)
     String sortDirection = Sort.Direction.ASC.name();
+
+    String nextPageCursor;
+    String prevPageCursor;
+
+    public boolean hasNextPageCursor() {
+        return nextPageCursor != null && !nextPageCursor.isEmpty();
+    }
+
+    public boolean hasPrevPageCursor() {
+        return prevPageCursor != null && !prevPageCursor.isEmpty();
+    }
+
+    public boolean hasCursors() {
+        return hasPrevPageCursor() || hasNextPageCursor();
+    }
+
+    public String getSearchValue() {
+        if (!hasCursors()) return StringUtils.EMPTY;
+
+        return hasPrevPageCursor()
+                ? PageUtils.getDecodedCursor(prevPageCursor)
+                : PageUtils.getDecodedCursor(nextPageCursor);
+    }
+
+
 }

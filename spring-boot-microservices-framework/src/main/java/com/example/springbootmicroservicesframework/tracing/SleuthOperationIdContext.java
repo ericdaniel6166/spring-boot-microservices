@@ -19,6 +19,7 @@ public class SleuthOperationIdContext implements OperationIdContext {
 
     @Override
     public String getOperationId() {
-        return Objects.requireNonNull(tracer.currentSpan()).context().traceId();
+        var span = Objects.requireNonNull(tracer.currentSpan());
+        return span.context().traceId();
     }
 }

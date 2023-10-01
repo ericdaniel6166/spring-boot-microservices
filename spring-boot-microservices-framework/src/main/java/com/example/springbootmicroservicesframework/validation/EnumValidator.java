@@ -16,6 +16,9 @@ public class EnumValidator implements ConstraintValidator<ValidEnum, String> {
     final ValidationUtils validationUtils;
     List<String> valueList;
     boolean caseSensitive;
+    String message;
+    String messageCode;
+    String[] messageParams;
 
     @Override
     public void initialize(ValidEnum constraintAnnotation) {
@@ -23,6 +26,9 @@ public class EnumValidator implements ConstraintValidator<ValidEnum, String> {
                 .map(Enum::name)
                 .toList();
         caseSensitive = constraintAnnotation.caseSensitive();
+        message = constraintAnnotation.message();
+        messageCode = constraintAnnotation.messageCode();
+        messageParams = constraintAnnotation.messageParams();
     }
 
     @Override
@@ -34,10 +40,14 @@ public class EnumValidator implements ConstraintValidator<ValidEnum, String> {
         if (!caseSensitive) {
             isValid = valueList.contains(s.toUpperCase());
         }
-        if (!isValid) {
-            validationUtils.addViolation(constraintValidatorContext,
-                    MessageConstant.MSG_ERR_COMMON_TYPE_MISMATCH_ENUMS,
-                    new String[]{Const.PLACEHOLDER_0, valueList.toString()});
+        if (!isValid && StringUtils.isBlank(message)) {
+            if (messageParams.length == 0 && StringUtils.isBlank(messageCode)) {
+                validationUtils.addViolation(constraintValidatorContext,
+                        MessageConstant.MSG_ERR_COMMON_TYPE_MISMATCH_ENUMS,
+                        new String[]{Const.PLACEHOLDER_0, valueList.toString()});
+            } else {
+                validationUtils.addViolation(constraintValidatorContext, messageCode, messageParams);
+            }
         }
         return isValid;
     }

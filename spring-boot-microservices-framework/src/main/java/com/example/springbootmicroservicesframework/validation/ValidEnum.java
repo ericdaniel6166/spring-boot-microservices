@@ -20,7 +20,11 @@ public @interface ValidEnum {
 
     boolean caseSensitive() default true;
 
-    String message() default "{typeMismatch.enums}";
+    String message() default "";
+
+    String messageCode() default "";
+
+    String[] messageParams() default {};
 
     Class<?>[] groups() default {};
 
