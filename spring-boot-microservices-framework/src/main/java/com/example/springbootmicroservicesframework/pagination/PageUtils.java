@@ -1,6 +1,7 @@
 package com.example.springbootmicroservicesframework.pagination;
 
 import com.example.springbootmicroservicesframework.utils.Const;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -14,9 +15,9 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 public final class PageUtils {
 
-    public static final AppSortOrder DEFAULT_ORDER = new AppSortOrder(Const.ID, Sort.Direction.ASC.name());
     public static final Sort.Order DEFAULT_SORT_ORDER = new Sort.Order(Sort.Direction.ASC, Const.ID);
 
     private PageUtils() {
@@ -31,11 +32,10 @@ public final class PageUtils {
         return PageRequest.of(pageNumber - 1, size, sort);
     }
 
-    public static void addDefaultAppOrder(List<AppSortOrder> orderList) {
-        orderList.add(DEFAULT_ORDER);
-    }
-
     public static void addDefaultOrder(List<Sort.Order> orders) {
+        if (orders.stream().anyMatch(order -> StringUtils.equals(order.getProperty(), Const.ID))) {
+            return;
+        }
         orders.add(DEFAULT_SORT_ORDER);
     }
 

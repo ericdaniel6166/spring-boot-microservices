@@ -2,9 +2,7 @@ package com.example.springbootmicroservicesframework.exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.springframework.http.HttpStatus;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,8 +12,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
 public class ErrorResponse implements Serializable {
 
     @Serial
@@ -29,7 +25,7 @@ public class ErrorResponse implements Serializable {
     @JsonIgnore
     private HttpStatus httpStatus;
 
-    private String operationId;
+    private String traceId;
 
     private String error;
 

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class ValidationErrorDetail extends ErrorDetail {
 
     @JsonIgnore
-    private String object;
+    private String keyClass;
 
     private String field;
 

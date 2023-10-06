@@ -1,13 +1,14 @@
 package com.example.springbootmicroservicesframework.pagination;
 
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 @Data
-@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CursorPageResponse<T> {
     List<T> content;
     String prevPageCursor;

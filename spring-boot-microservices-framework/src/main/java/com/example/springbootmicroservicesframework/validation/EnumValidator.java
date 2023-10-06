@@ -43,7 +43,7 @@ public class EnumValidator implements ConstraintValidator<ValidEnum, String> {
         if (!isValid && StringUtils.isBlank(message)) {
             if (messageParams.length == 0 && StringUtils.isBlank(messageCode)) {
                 validationUtils.addViolation(constraintValidatorContext,
-                        MessageConstant.MSG_ERR_COMMON_TYPE_MISMATCH_ENUMS,
+                        MessageConstant.MSG_ERR_COMMON_TYPE_MISMATCH_ENUM,
                         new String[]{Const.PLACEHOLDER_0, valueList.toString()});
             } else {
                 validationUtils.addViolation(constraintValidatorContext, messageCode, messageParams);
