@@ -3,10 +3,7 @@ package com.example.springbootmicroservicesframework.pagination;
 import com.example.springbootmicroservicesframework.utils.Const;
 import com.example.springbootmicroservicesframework.validation.ValidEnum;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
@@ -15,9 +12,6 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CursorPageRequest {
 

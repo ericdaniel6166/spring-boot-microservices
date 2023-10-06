@@ -13,12 +13,12 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @ConditionalOnClass(value = Tracer.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class SleuthOperationIdContext implements OperationIdContext {
+public class SleuthTraceIdContext implements TraceIdContext {
 
     final Tracer tracer;
 
     @Override
-    public String getOperationId() {
+    public String getTraceId() {
         var span = Objects.requireNonNull(tracer.currentSpan());
         return span.context().traceId();
     }

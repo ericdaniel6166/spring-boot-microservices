@@ -36,9 +36,12 @@
     - discovery-server : https://github.com/ericdaniel6166/discovery-server
     - api-gateway : https://github.com/ericdaniel6166/api-gateway
     - product-service : https://github.com/ericdaniel6166/product-service
+        - cursor pagination
     - order-service : https://github.com/ericdaniel6166/order-service
+        - kafka producer
     - inventory-service : https://github.com/ericdaniel6166/inventory-service
     - notification-service : https://github.com/ericdaniel6166/notification-service
+        - kafka consumer
 
 - Make sure microservice repositories at directory as below, otherwise should change this for dev-environment setup
 

@@ -3,8 +3,12 @@ package com.example.springbootmicroservicesframework.utils;
 import java.time.format.DateTimeFormatter;
 
 public final class Const {
+
     public static final String REQUEST_PARAM_LANGUAGE = "lang";
     public static final int MAXIMUM_PAGE_SIZE = 200;
+    public static final int MAXIMUM_CREATE_UPDATE_MULTI_ITEM = 10;
+    public static final int MAXIMUM_BIG_DECIMAL_INTEGER = 19;
+    public static final int MAXIMUM_BIG_DECIMAL_FRACTION = 4;
     public static final int DEFAULT_PAGE_SIZE = 10;
     public static final int MAXIMUM_SORT_COLUMN = 10;
     public static final int ZERO = 0;
@@ -17,8 +21,6 @@ public final class Const {
     public static final String ID = "id";
     public static final String GENERAL_FIELD = "common.generalField";
     public static final DateTimeFormatter DEFAULT_DATE_TIME_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME; //change
-
-
     private Const() {
         throw new IllegalStateException("Utility class");
     }

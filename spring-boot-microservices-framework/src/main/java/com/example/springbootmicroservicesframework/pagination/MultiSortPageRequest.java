@@ -2,10 +2,7 @@ package com.example.springbootmicroservicesframework.pagination;
 
 import com.example.springbootmicroservicesframework.utils.Const;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import javax.validation.Valid;
@@ -14,9 +11,6 @@ import javax.validation.constraints.Min;
 import java.util.List;
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MultiSortPageRequest {
 
