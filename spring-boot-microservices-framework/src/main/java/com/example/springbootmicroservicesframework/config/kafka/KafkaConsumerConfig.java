@@ -1,4 +1,4 @@
-package com.example.springbootmicroservicesframework.kafka;
+package com.example.springbootmicroservicesframework.config.kafka;
 
 import com.example.springbootmicroservicesframework.exception.GlobalErrorHandler;
 import lombok.AccessLevel;
@@ -20,7 +20,7 @@ import java.util.Map;
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "spring.kafka", name = "enabled")
+@ConditionalOnProperty(name = "spring.kafka.enabled", havingValue = "true")
 @EnableKafka
 public class KafkaConsumerConfig {
 

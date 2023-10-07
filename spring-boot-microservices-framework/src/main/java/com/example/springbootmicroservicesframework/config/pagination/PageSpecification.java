@@ -1,4 +1,4 @@
-package com.example.springbootmicroservicesframework.pagination;
+package com.example.springbootmicroservicesframework.config.pagination;
 
 import com.example.springbootmicroservicesframework.utils.Const;
 import com.example.springbootmicroservicesframework.utils.DateTimeUtils;
