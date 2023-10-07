@@ -1,4 +1,4 @@
-package com.example.springbootmicroservicesframework.feign;
+package com.example.springbootmicroservicesframework.config.feign;
 
 import feign.Logger;
 import feign.RequestInterceptor;

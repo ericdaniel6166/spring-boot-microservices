@@ -1,6 +1,6 @@
 package com.example.springbootmicroservicesframework.exception;
 
-import com.example.springbootmicroservicesframework.tracing.TraceIdContext;
+import com.example.springbootmicroservicesframework.config.tracing.TraceIdContext;
 import com.example.springbootmicroservicesframework.utils.Const;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

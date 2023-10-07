@@ -1,4 +1,4 @@
-package com.example.springbootmicroservicesframework.tracing;
+package com.example.springbootmicroservicesframework.config.tracing;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

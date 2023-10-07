@@ -1,4 +1,4 @@
-package com.example.springbootmicroservicesframework.kafka;
+package com.example.springbootmicroservicesframework.config.kafka;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.Map;
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "spring.kafka", name = "enabled")
+@ConditionalOnProperty(name = "spring.kafka.enabled", havingValue = "true")
 public class KafkaProducerConfig {
 
     final KafkaProperties kafkaProperties;
@@ -34,7 +34,7 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, Object> kafkaTemplate(){
+    public KafkaTemplate<String, Object> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 
