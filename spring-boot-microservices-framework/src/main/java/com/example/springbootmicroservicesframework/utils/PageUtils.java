@@ -1,6 +1,6 @@
-package com.example.springbootmicroservicesframework.config.pagination;
+package com.example.springbootmicroservicesframework.utils;
 
-import com.example.springbootmicroservicesframework.utils.Const;
+import com.example.springbootmicroservicesframework.dto.CursorPageResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
