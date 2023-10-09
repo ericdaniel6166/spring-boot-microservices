@@ -2,6 +2,7 @@ package com.example.springbootmicroservicesframework.validation;
 
 import com.example.springbootmicroservicesframework.utils.Const;
 import com.example.springbootmicroservicesframework.utils.MessageConstant;
+import com.example.springbootmicroservicesframework.utils.ValidationUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 

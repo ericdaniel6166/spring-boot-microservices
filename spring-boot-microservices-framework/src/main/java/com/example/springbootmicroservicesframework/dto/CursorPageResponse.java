@@ -1,4 +1,4 @@
-package com.example.springbootmicroservicesframework.config.pagination;
+package com.example.springbootmicroservicesframework.dto;
 
 import lombok.AccessLevel;
 import lombok.Data;

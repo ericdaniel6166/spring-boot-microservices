@@ -1,4 +1,4 @@
-package com.example.springbootmicroservicesframework.validation;
+package com.example.springbootmicroservicesframework.utils;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

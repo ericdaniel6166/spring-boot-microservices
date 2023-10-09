@@ -83,3 +83,58 @@ make local-up
 # Docker compose down
 make local-down
 ```
+
+## Sequence diagrams (Updating...)
+
+- Using mermaid.live
+
+```
+sequenceDiagram
+    client->>+order-service: place(orderRequest)
+    order-service->>order-service: validateRequest(orderRequest)
+    order-service->>order_service_db: save(order) 
+    note over order-service, order_service_db : save t_order, status PENDING
+
+    order-service->>order_service_db: save(orderStatusHistory)
+    note over order-service, order_service_db : save order_status_history, status PENDING
+   
+    order-service->>kafka: send(orderPendingEvent)
+    order-service-->>-client: orderStatus
+    note over order-service, client: orderStatus PENDING
+
+    kafka->>+inventory-service: consume(orderPendingEvent)
+    inventory-service->>inventory-service: validateEvent(orderPendingEvent)
+    inventory-service->>+inventory_service_db: getInfo(inventory, product)
+    note over inventory-service, inventory_service_db: get from inventory, product
+    inventory_service_db-->>-inventory-service: inventoryInfo
+
+    inventory-service->>inventory-service: validateItemAvailable(orderPendingEvent, inventoryInfo)
+
+    alt is valid
+        inventory-service->>kafka: send(orderProcessingEvent)
+
+    else is not valid
+        inventory-service->>-kafka: send(orderItemNotAvailableEvent)
+        kafka->>order-service:consume(orderItemNotAvailableEvent)
+        activate order-service
+        order-service->>+order_service_db:update(order)
+        note over order-service, order_service_db : update t_order, status FAIL_ITEM_NOT_AVAILABLE
+        
+        order-service->>+order_service_db:save(orderStatusHistory)
+        note over order-service, order_service_db:save order_status_history, status FAIL_ITEM_NOT_AVAILABLE
+        
+        deactivate order-service
+    end 
+```
+
+[![](https://mermaid.ink/img/pako:eNqdVV1vmzAU_SuWnxqVRJBBmvFQKVOzLVKbVWu1hwkJuXCTWgE7sw1aGuW_z-B8EUhTxpOxOeeee8_leo0jHgP2sYQ_GbAI7iiZC5IGDOknSigw1b29veYiBtGVIHIagY-WCYngqtz8WQCl6hhE5TsNPMHlJKExUbAFfZgh3L6H8YuPJMm3sTvIYBhXgHgOooq20CkYGTRSYXliIamIyiR6HE_vJtNvAWuv4alk-E6l4mLV-U892_2SKnw1XHVxmrlZ34LMFkRTAYuNqEe9omw-zrV9jXXVoK5x10dHaVyQ34A4LV0ppegYyorgOo-D-xFnMkvhrMQaRPM00OyaqIS2IjuIqpg5BzVhM361P7XQUvA4i1TNzxqrhc5yopngKaqTnug7gpW2NGS83ypk7irdsloTBekoJzQhL0mDBVY1SGcXhSQKUWlYzM652PUmFDwCKY98MQSQSCg4dVU_wtutERepTLnaZ3Ns-3EPVodPpfsuUZBI0ZwoqP4Bh_PTP_C6NiKyZVH17Zw6ANuMBkNRG1ZfR5P7cPI8fginP57D0S_9OvpyPz7EaCPz_UHWSrF_eZS1kB7Dex7oXkDYwimIlNBY31_rYj_A6hVSCLCvlzERiwAHbKO_I5niTysWYV-JDCxsKru967A_I7olLbwkDPtr_Bf7ztDteUN30Lc9z76xPcez8Ar7Xq8_9Nz-wB3YN47z2f7kbSz8xrmmcHq2efqu69mO4w4sDDHV2T-YC7a8Z8sYv0tAIWTzD7FDmtg?type=png)](https://mermaid.live/edit#pako:eNqdVV1vmzAU_SuWnxqVRJBBmvFQKVOzLVKbVWu1hwkJuXCTWgE7sw1aGuW_z-B8EUhTxpOxOeeee8_leo0jHgP2sYQ_GbAI7iiZC5IGDOknSigw1b29veYiBtGVIHIagY-WCYngqtz8WQCl6hhE5TsNPMHlJKExUbAFfZgh3L6H8YuPJMm3sTvIYBhXgHgOooq20CkYGTRSYXliIamIyiR6HE_vJtNvAWuv4alk-E6l4mLV-U892_2SKnw1XHVxmrlZ34LMFkRTAYuNqEe9omw-zrV9jXXVoK5x10dHaVyQ34A4LV0ppegYyorgOo-D-xFnMkvhrMQaRPM00OyaqIS2IjuIqpg5BzVhM361P7XQUvA4i1TNzxqrhc5yopngKaqTnug7gpW2NGS83ypk7irdsloTBekoJzQhL0mDBVY1SGcXhSQKUWlYzM652PUmFDwCKY98MQSQSCg4dVU_wtutERepTLnaZ3Ns-3EPVodPpfsuUZBI0ZwoqP4Bh_PTP_C6NiKyZVH17Zw6ANuMBkNRG1ZfR5P7cPI8fginP57D0S_9OvpyPz7EaCPz_UHWSrF_eZS1kB7Dex7oXkDYwimIlNBY31_rYj_A6hVSCLCvlzERiwAHbKO_I5niTysWYV-JDCxsKru967A_I7olLbwkDPtr_Bf7ztDteUN30Lc9z76xPcez8Ar7Xq8_9Nz-wB3YN47z2f7kbSz8xrmmcHq2efqu69mO4w4sDDHV2T-YC7a8Z8sYv0tAIWTzD7FDmtg)
+
+```
+sequenceDiagram
+    client->>+order-service: getOrderStatus(orderId)
+    order-service->>+order_service_db:getOrderStatus(orderId)
+    order_service_db-->>-order-service: orderStatus
+    order-service-->>-client: orderStatus
+```
+
+[![](https://mermaid.ink/img/pako:eNqFkU1PwzAMhv_K5BOItKJr03Y57MSFA-KwG4o0hcSMiDUZaYIYVf87acPXEBI-WNGb97GdeABpFQKDHp8DGolXWuyc6LhZxJB7jcZn6_WFdQpd1qN70RLZYof-dlI2XvjQn8231-o8USfeL3j7IWzVPfsf_-HOYonsV3_7Tf_VcyLS7CdWINCh64RW8cHDBHLwj9ghBxaPSrgnDtyM0SeCt5ujkcC8C0ggHJTwn58D7EHs-6gehAE2wCuwps7rqi1pkTJdETgCK4o2L8tlVTS0TXkk8GZtrHCZr1JQWjdVtWwIoNLeupu0j3ktc4e72T-NMb4DMOyNzw?type=png)](https://mermaid.live/edit#pako:eNqFkU1PwzAMhv_K5BOItKJr03Y57MSFA-KwG4o0hcSMiDUZaYIYVf87acPXEBI-WNGb97GdeABpFQKDHp8DGolXWuyc6LhZxJB7jcZn6_WFdQpd1qN70RLZYof-dlI2XvjQn8231-o8USfeL3j7IWzVPfsf_-HOYonsV3_7Tf_VcyLS7CdWINCh64RW8cHDBHLwj9ghBxaPSrgnDtyM0SeCt5ujkcC8C0ggHJTwn58D7EHs-6gehAE2wCuwps7rqi1pkTJdETgCK4o2L8tlVTS0TXkk8GZtrHCZr1JQWjdVtWwIoNLeupu0j3ktc4e72T-NMb4DMOyNzw)

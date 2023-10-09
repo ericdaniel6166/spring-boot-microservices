@@ -1,4 +1,4 @@
-package com.example.springbootmicroservicesframework.config.pagination;
+package com.example.springbootmicroservicesframework.dto;
 
 import com.example.springbootmicroservicesframework.validation.ValidEnum;
 import lombok.AccessLevel;

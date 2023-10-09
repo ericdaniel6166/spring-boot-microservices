@@ -1,5 +1,6 @@
-package com.example.springbootmicroservicesframework.config.pagination;
+package com.example.springbootmicroservicesframework.config.specification;
 
+import com.example.springbootmicroservicesframework.dto.CursorPageRequest;
 import com.example.springbootmicroservicesframework.utils.Const;
 import com.example.springbootmicroservicesframework.utils.DateTimeUtils;
 import lombok.AccessLevel;
