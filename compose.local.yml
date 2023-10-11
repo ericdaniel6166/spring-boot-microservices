@@ -17,6 +17,23 @@ services:
       - my-network
     restart: always
 
+  postgres-payment:
+    container_name: postgres-payment
+    image: postgres:14.9-alpine
+    environment:
+      POSTGRES_DB: payment_service
+      POSTGRES_PASSWORD: secret
+      POSTGRES_USER: postgres
+    ports:
+      - "5435:5432"
+    expose:
+      - "5435"
+    volumes:
+      - postgres-payment-data:/var/lib/postgresql/data
+    networks:
+      - my-network
+    restart: always
+
   postgres-product:
     container_name: postgres-product
     image: postgres:14.9-alpine
@@ -49,17 +66,17 @@ services:
       - my-network
     restart: always
 
-#  keycloak:
-#    image: quay.io/keycloak/keycloak:22.0.1
-#    container_name: keycloak
-#    command: [ "start-dev", "--import-realm" ]
-#    environment:
-#      KEYCLOAK_ADMIN: admin
-#      KEYCLOAK_ADMIN_PASSWORD: admin
-#    ports:
-#      - "8080:8080"
-#    volumes:
-#      - ./realms/:/opt/keycloak/data/import/
+  #  keycloak:
+  #    image: quay.io/keycloak/keycloak:22.0.1
+  #    container_name: keycloak
+  #    command: [ "start-dev", "--import-realm" ]
+  #    environment:
+  #      KEYCLOAK_ADMIN: admin
+  #      KEYCLOAK_ADMIN_PASSWORD: admin
+  #    ports:
+  #      - "8080:8080"
+  #    volumes:
+  #      - ./realms/:/opt/keycloak/data/import/
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.0.1
@@ -96,4 +113,5 @@ networks:
 volumes:
   postgres-product-data:
   postgres-order-data:
+  postgres-payment-data:
   postgres-inventory-data:

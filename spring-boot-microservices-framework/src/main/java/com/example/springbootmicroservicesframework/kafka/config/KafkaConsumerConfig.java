@@ -1,4 +1,4 @@
-package com.example.springbootmicroservicesframework.config.kafka;
+package com.example.springbootmicroservicesframework.kafka.config;
 
 import com.example.springbootmicroservicesframework.exception.GlobalErrorHandler;
 import lombok.AccessLevel;

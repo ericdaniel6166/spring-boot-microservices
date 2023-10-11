@@ -38,10 +38,13 @@
     - product-service : https://github.com/ericdaniel6166/product-service
         - cursor pagination
     - order-service : https://github.com/ericdaniel6166/order-service
-        - kafka producer
+        - kafka
     - inventory-service : https://github.com/ericdaniel6166/inventory-service
+        - kafka
+    - payment-service : https://github.com/ericdaniel6166/payment-service
+        - kafka
     - notification-service : https://github.com/ericdaniel6166/notification-service
-        - kafka consumer
+        - kafka
 
 - Make sure microservice repositories at directory as below, otherwise should change this for dev-environment setup
 
@@ -112,6 +115,16 @@ sequenceDiagram
 
     alt is valid
         inventory-service->>kafka: send(orderProcessingEvent)
+        kafka->>order-service:consume(orderProcessingEvent)
+        activate order-service
+        order-service->>+order_service_db:update(order)
+        note over order-service, order_service_db : update t_order, status PROCESSING
+        
+        order-service->>+order_service_db:save(orderStatusHistory)
+        note over order-service, order_service_db:save order_status_history, status PROCESSING
+        
+        deactivate order-service
+
 
     else is not valid
         inventory-service->>-kafka: send(orderItemNotAvailableEvent)
@@ -127,7 +140,7 @@ sequenceDiagram
     end 
 ```
 
-[![](https://mermaid.ink/img/pako:eNqdVV1vmzAU_SuWnxqVRJBBmvFQKVOzLVKbVWu1hwkJuXCTWgE7sw1aGuW_z-B8EUhTxpOxOeeee8_leo0jHgP2sYQ_GbAI7iiZC5IGDOknSigw1b29veYiBtGVIHIagY-WCYngqtz8WQCl6hhE5TsNPMHlJKExUbAFfZgh3L6H8YuPJMm3sTvIYBhXgHgOooq20CkYGTRSYXliIamIyiR6HE_vJtNvAWuv4alk-E6l4mLV-U892_2SKnw1XHVxmrlZ34LMFkRTAYuNqEe9omw-zrV9jXXVoK5x10dHaVyQ34A4LV0ppegYyorgOo-D-xFnMkvhrMQaRPM00OyaqIS2IjuIqpg5BzVhM361P7XQUvA4i1TNzxqrhc5yopngKaqTnug7gpW2NGS83ypk7irdsloTBekoJzQhL0mDBVY1SGcXhSQKUWlYzM652PUmFDwCKY98MQSQSCg4dVU_wtutERepTLnaZ3Ns-3EPVodPpfsuUZBI0ZwoqP4Bh_PTP_C6NiKyZVH17Zw6ANuMBkNRG1ZfR5P7cPI8fginP57D0S_9OvpyPz7EaCPz_UHWSrF_eZS1kB7Dex7oXkDYwimIlNBY31_rYj_A6hVSCLCvlzERiwAHbKO_I5niTysWYV-JDCxsKru967A_I7olLbwkDPtr_Bf7ztDteUN30Lc9z76xPcez8Ar7Xq8_9Nz-wB3YN47z2f7kbSz8xrmmcHq2efqu69mO4w4sDDHV2T-YC7a8Z8sYv0tAIWTzD7FDmtg?type=png)](https://mermaid.live/edit#pako:eNqdVV1vmzAU_SuWnxqVRJBBmvFQKVOzLVKbVWu1hwkJuXCTWgE7sw1aGuW_z-B8EUhTxpOxOeeee8_leo0jHgP2sYQ_GbAI7iiZC5IGDOknSigw1b29veYiBtGVIHIagY-WCYngqtz8WQCl6hhE5TsNPMHlJKExUbAFfZgh3L6H8YuPJMm3sTvIYBhXgHgOooq20CkYGTRSYXliIamIyiR6HE_vJtNvAWuv4alk-E6l4mLV-U892_2SKnw1XHVxmrlZ34LMFkRTAYuNqEe9omw-zrV9jXXVoK5x10dHaVyQ34A4LV0ppegYyorgOo-D-xFnMkvhrMQaRPM00OyaqIS2IjuIqpg5BzVhM361P7XQUvA4i1TNzxqrhc5yopngKaqTnug7gpW2NGS83ypk7irdsloTBekoJzQhL0mDBVY1SGcXhSQKUWlYzM652PUmFDwCKY98MQSQSCg4dVU_wtutERepTLnaZ3Ns-3EPVodPpfsuUZBI0ZwoqP4Bh_PTP_C6NiKyZVH17Zw6ANuMBkNRG1ZfR5P7cPI8fginP57D0S_9OvpyPz7EaCPz_UHWSrF_eZS1kB7Dex7oXkDYwimIlNBY31_rYj_A6hVSCLCvlzERiwAHbKO_I5niTysWYV-JDCxsKru967A_I7olLbwkDPtr_Bf7ztDteUN30Lc9z76xPcez8Ar7Xq8_9Nz-wB3YN47z2f7kbSz8xrmmcHq2efqu69mO4w4sDDHV2T-YC7a8Z8sYv0tAIWTzD7FDmtg)
+[![](https://mermaid.ink/img/pako:eNrVVl1v2jAU_SuWn4oaUCgLhTxUYivbkFpalWoPU6TITS40IrFZ7ERjiP8-x-YrXy3p0-an5Nrn3ON7jy1vsMd8wDbm8CsB6sFtQBYxiRyK5PDCAKho39xcstiHuM0hTgMPbLQKiQcXKviUAbloaURunQQWcCkJA58I2IHOZnB3_67_YiNO0l3uFtIYygQglkKcRxuoCEYajYSrZgzEBREJR4_j6e1k-s2hzTXMFMP3gAsWr1sf1LOLKyr3VXOVxUnman1LMl8SSQXU16Ie5VdAF-NUtq-yrhLU1t210ck23pFfgSiWTknJHBPQLLncx7H7HqM8iaBWYgkieSpo9iZS0EZkR1G5Zi5ATOicXRxmDbSKmZ94otTPEquBajnRPGYRKpMW9J3AVFsqdnwIZTL3lW5YrYmAaJSSICQvYUULjHyS1j4LCQUKuGbRkbrcZRPGzAPOC305NUn-dsjboxZMPBGkREDenMf54uG4LJ3eZJUVZHeFHIFNTq2mKN8jTw9fxrPZ_rSq0UTZ29dKI5H2GRfLm2p9qKv03hsQcsjMITWdY5B2ySGZJ6dMHGz5AZ-8R_Evu-XraHLnTp7H9-704dkd_ZC_o8934__BOg2k1_tIeYj6CBs4gjgigS8fIpss7mDxChE42JafPomXDnboVq4jiWCzNfWwLeIEDKwru3u0YHtOpCUNvCIU2xv8G9tXvWHHNM1B37QGVnd4PewZeI3tTx2ra12Zvf51d9Azu73-1sB_GJMMZmeoh2UNza45kOvBD-Te7_U7ST2XVIafan0mY_sXTnw17g?type=png)](https://mermaid.live/edit#pako:eNrVVl1v2jAU_SuWn4oaUCgLhTxUYivbkFpalWoPU6TITS40IrFZ7ERjiP8-x-YrXy3p0-an5Nrn3ON7jy1vsMd8wDbm8CsB6sFtQBYxiRyK5PDCAKho39xcstiHuM0hTgMPbLQKiQcXKviUAbloaURunQQWcCkJA58I2IHOZnB3_67_YiNO0l3uFtIYygQglkKcRxuoCEYajYSrZgzEBREJR4_j6e1k-s2hzTXMFMP3gAsWr1sf1LOLKyr3VXOVxUnman1LMl8SSQXU16Ie5VdAF-NUtq-yrhLU1t210ck23pFfgSiWTknJHBPQLLncx7H7HqM8iaBWYgkieSpo9iZS0EZkR1G5Zi5ATOicXRxmDbSKmZ94otTPEquBajnRPGYRKpMW9J3AVFsqdnwIZTL3lW5YrYmAaJSSICQvYUULjHyS1j4LCQUKuGbRkbrcZRPGzAPOC305NUn-dsjboxZMPBGkREDenMf54uG4LJ3eZJUVZHeFHIFNTq2mKN8jTw9fxrPZ_rSq0UTZ29dKI5H2GRfLm2p9qKv03hsQcsjMITWdY5B2ySGZJ6dMHGz5AZ-8R_Evu-XraHLnTp7H9-704dkd_ZC_o8934__BOg2k1_tIeYj6CBs4gjgigS8fIpss7mDxChE42JafPomXDnboVq4jiWCzNfWwLeIEDKwru3u0YHtOpCUNvCIU2xv8G9tXvWHHNM1B37QGVnd4PewZeI3tTx2ra12Zvf51d9Azu73-1sB_GJMMZmeoh2UNza45kOvBD-Te7_U7ST2XVIafan0mY_sXTnw17g)
 
 ```
 sequenceDiagram
