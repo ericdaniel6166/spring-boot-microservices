@@ -55,6 +55,7 @@
 ├── api-gateway
 ├── product-service
 ├── order-service
+├── payment-service
 ├── inventory-service
 └── notification-service
 ```
@@ -95,10 +96,10 @@ make local-down
 sequenceDiagram
     client->>+order-service: place(orderRequest)
     order-service->>order-service: validateRequest(orderRequest)
-    order-service->>order_service_db: save(order) 
+    order-service->>order_service_db: saveOrder() 
     note over order-service, order_service_db : save t_order, status PENDING
 
-    order-service->>order_service_db: save(orderStatusHistory)
+    order-service->>order_service_db: saveOrderStatusHistory()
     note over order-service, order_service_db : save order_status_history, status PENDING
    
     order-service->>kafka: send(orderPendingEvent)
@@ -107,7 +108,7 @@ sequenceDiagram
 
     kafka->>+inventory-service: consume(orderPendingEvent)
     inventory-service->>inventory-service: validateEvent(orderPendingEvent)
-    inventory-service->>+inventory_service_db: getInfo(inventory, product)
+    inventory-service->>+inventory_service_db: getInventoryInfo()
     note over inventory-service, inventory_service_db: get from inventory, product
     inventory_service_db-->>-inventory-service: inventoryInfo
 
@@ -117,10 +118,10 @@ sequenceDiagram
         inventory-service->>kafka: send(orderProcessingEvent)
         kafka->>order-service:consume(orderProcessingEvent)
         activate order-service
-        order-service->>+order_service_db:update(order)
+        order-service->>+order_service_db:updateOrder()
         note over order-service, order_service_db : update t_order, status PROCESSING
         
-        order-service->>+order_service_db:save(orderStatusHistory)
+        order-service->>+order_service_db:saveOrderStatusHistory()
         note over order-service, order_service_db:save order_status_history, status PROCESSING
         
         deactivate order-service
@@ -130,22 +131,38 @@ sequenceDiagram
         inventory-service->>-kafka: send(orderItemNotAvailableEvent)
         kafka->>order-service:consume(orderItemNotAvailableEvent)
         activate order-service
-        order-service->>+order_service_db:update(order)
-        note over order-service, order_service_db : update t_order, status FAIL_ITEM_NOT_AVAILABLE
+        order-service->>+order_service_db:updateOrder()
+        note over order-service, order_service_db : update t_order, status ITEM_NOT_AVAILABLE
         
-        order-service->>+order_service_db:save(orderStatusHistory)
-        note over order-service, order_service_db:save order_status_history, status FAIL_ITEM_NOT_AVAILABLE
+        order-service->>+order_service_db:saveOrderStatusHistory()
+        note over order-service, order_service_db:save order_status_history, status ITEM_NOT_AVAILABLE
         
         deactivate order-service
     end 
 ```
 
-[![](https://mermaid.ink/img/pako:eNrVVl1v2jAU_SuWn4oaUCgLhTxUYivbkFpalWoPU6TITS40IrFZ7ERjiP8-x-YrXy3p0-an5Nrn3ON7jy1vsMd8wDbm8CsB6sFtQBYxiRyK5PDCAKho39xcstiHuM0hTgMPbLQKiQcXKviUAbloaURunQQWcCkJA58I2IHOZnB3_67_YiNO0l3uFtIYygQglkKcRxuoCEYajYSrZgzEBREJR4_j6e1k-s2hzTXMFMP3gAsWr1sf1LOLKyr3VXOVxUnman1LMl8SSQXU16Ie5VdAF-NUtq-yrhLU1t210ck23pFfgSiWTknJHBPQLLncx7H7HqM8iaBWYgkieSpo9iZS0EZkR1G5Zi5ATOicXRxmDbSKmZ94otTPEquBajnRPGYRKpMW9J3AVFsqdnwIZTL3lW5YrYmAaJSSICQvYUULjHyS1j4LCQUKuGbRkbrcZRPGzAPOC305NUn-dsjboxZMPBGkREDenMf54uG4LJ3eZJUVZHeFHIFNTq2mKN8jTw9fxrPZ_rSq0UTZ29dKI5H2GRfLm2p9qKv03hsQcsjMITWdY5B2ySGZJ6dMHGz5AZ-8R_Evu-XraHLnTp7H9-704dkd_ZC_o8934__BOg2k1_tIeYj6CBs4gjgigS8fIpss7mDxChE42JafPomXDnboVq4jiWCzNfWwLeIEDKwru3u0YHtOpCUNvCIU2xv8G9tXvWHHNM1B37QGVnd4PewZeI3tTx2ra12Zvf51d9Azu73-1sB_GJMMZmeoh2UNza45kOvBD-Te7_U7ST2XVIafan0mY_sXTnw17g?type=png)](https://mermaid.live/edit#pako:eNrVVl1v2jAU_SuWn4oaUCgLhTxUYivbkFpalWoPU6TITS40IrFZ7ERjiP8-x-YrXy3p0-an5Nrn3ON7jy1vsMd8wDbm8CsB6sFtQBYxiRyK5PDCAKho39xcstiHuM0hTgMPbLQKiQcXKviUAbloaURunQQWcCkJA58I2IHOZnB3_67_YiNO0l3uFtIYygQglkKcRxuoCEYajYSrZgzEBREJR4_j6e1k-s2hzTXMFMP3gAsWr1sf1LOLKyr3VXOVxUnman1LMl8SSQXU16Ie5VdAF-NUtq-yrhLU1t210ck23pFfgSiWTknJHBPQLLncx7H7HqM8iaBWYgkieSpo9iZS0EZkR1G5Zi5ATOicXRxmDbSKmZ94otTPEquBajnRPGYRKpMW9J3AVFsqdnwIZTL3lW5YrYmAaJSSICQvYUULjHyS1j4LCQUKuGbRkbrcZRPGzAPOC305NUn-dsjboxZMPBGkREDenMf54uG4LJ3eZJUVZHeFHIFNTq2mKN8jTw9fxrPZ_rSq0UTZ29dKI5H2GRfLm2p9qKv03hsQcsjMITWdY5B2ySGZJ6dMHGz5AZ-8R_Evu-XraHLnTp7H9-704dkd_ZC_o8934__BOg2k1_tIeYj6CBs4gjgigS8fIpss7mDxChE42JafPomXDnboVq4jiWCzNfWwLeIEDKwru3u0YHtOpCUNvCIU2xv8G9tXvWHHNM1B37QGVnd4PewZeI3tTx2ra12Zvf51d9Azu73-1sB_GJMMZmeoh2UNza45kOvBD-Te7_U7ST2XVIafan0mY_sXTnw17g)
+[![](https://mermaid.ink/img/pako:eNrVVl1v2jAU_SuWn4oaEAECIQ-V2Mq2SC2tSrWHCSlykwu1SGwWO9EY4r_P-RokgZb0actTcp1z7vG9x1feYZd7gC0s4GcEzIVbSlYhCRYMqcf1KTDZvrm55qEHYVtAGFMXLLTxiQtXafApAQrZyhCl_xSwgouJTz0iIQddzODk3473YiFB4jx3C2UYxiUgHkNYRmuoCkYZGkknXdGQkERGAj1OZ7f27OuCNdcwTxm-USF5uG19UE8eT6mc14yrLk4xn9a3Jss1UVTAvEzUo3qjbDWNVftO1lWB2ll3LXS0jXfkn0BUS5dKSRxDWZJc7ePQfZczEQVwVmINonhO0BQmSqGNyA6iSs1cgbSLBZst-dUm5F7kStur9bPGqqGznGgZ8uCwrKGctqLvCJa25cSO6bG6otINq2VLCCYxoT558U-0QCsnaRVZiC8RFRlLFjmXu27CkLsgRKUvxyYpT4eyPc6CiStpTCSUzXlYrx6O69rpjTZJQfIRcgA2ObUZRX2OPD18ns7nxWlNnybK3h4rjURaFwyWN9V6cK7ShTfAF5CYQ2m6xCDtmkMST864_GvLD_jkPYp_2S1fJvadYz9P753Zw7Mz-a4-J5_upv-DdRpIP--j1EPMQ1jDAYQBoZ66iOyS-ALLVwhggS316pFwvcALtlf_kUjy-Za52JJhBBrOKptfWrC1JMqSGt4Qhq0d_oWtdm_Y6ZnjkdHXB91eb9Qda3irwqYx7PQN0xzo_VG3a3R7ew3_5lxR6J3xSDeHA93QDbOv97qmhsGjavf32U0pvTClOX6kgETI_g8-MzZz?type=png)](https://mermaid.live/edit#pako:eNrVVl1v2jAU_SuWn4oaEAECIQ-V2Mq2SC2tSrWHCSlykwu1SGwWO9EY4r_P-RokgZb0actTcp1z7vG9x1feYZd7gC0s4GcEzIVbSlYhCRYMqcf1KTDZvrm55qEHYVtAGFMXLLTxiQtXafApAQrZyhCl_xSwgouJTz0iIQddzODk3473YiFB4jx3C2UYxiUgHkNYRmuoCkYZGkknXdGQkERGAj1OZ7f27OuCNdcwTxm-USF5uG19UE8eT6mc14yrLk4xn9a3Jss1UVTAvEzUo3qjbDWNVftO1lWB2ll3LXS0jXfkn0BUS5dKSRxDWZJc7ePQfZczEQVwVmINonhO0BQmSqGNyA6iSs1cgbSLBZst-dUm5F7kStur9bPGqqGznGgZ8uCwrKGctqLvCJa25cSO6bG6otINq2VLCCYxoT558U-0QCsnaRVZiC8RFRlLFjmXu27CkLsgRKUvxyYpT4eyPc6CiStpTCSUzXlYrx6O69rpjTZJQfIRcgA2ObUZRX2OPD18ns7nxWlNnybK3h4rjURaFwyWN9V6cK7ShTfAF5CYQ2m6xCDtmkMST864_GvLD_jkPYp_2S1fJvadYz9P753Zw7Mz-a4-J5_upv-DdRpIP--j1EPMQ1jDAYQBoZ66iOyS-ALLVwhggS316pFwvcALtlf_kUjy-Za52JJhBBrOKptfWrC1JMqSGt4Qhq0d_oWtdm_Y6ZnjkdHXB91eb9Qda3irwqYx7PQN0xzo_VG3a3R7ew3_5lxR6J3xSDeHA93QDbOv97qmhsGjavf32U0pvTClOX6kgETI_g8-MzZz)
 
 ```
 sequenceDiagram
-    client->>+order-service: getOrderStatus(orderId)
-    order-service->>+order_service_db:getOrderStatus(orderId)
+    kafka ->>+payment-service:consume(orderProcessingEvent)
+    payment-service->>payment-service:validateEvent(orderProcessingEvent)
+    payment-service->>payment-service:calculateOrder()
+    payment-service->>payment_service_db:savePayment()
+    note over payment-service, payment_service_db : save payment, status PAYMENT_PROCESSING
+    payment-service->>payment_service_db:savePaymentStatusHistory()
+    note over payment-service, payment_service_db : save payment_status_history, status PAYMENT_PROCESSING
+    payment-service->>-kafka: send(orderPaymentProcessingEvent)
+
+
+```
+
+[![](https://mermaid.ink/img/pako:eNqtk8FOg0AQhl-FzEkjbYBSkD00Mdqoh7ZEvGhIyArTlhR26-5CxKbv7gLtpT2YVOe0mZ3_2z87MztIeYZAQOJnhSzFh5yuBC1jZujY0OWGGoPJ5GZLmxKZGkgUdZ4iSTmTVYlXXGQoQsFTlDJnq2mti6578YlEU04hNS3yjCrsVH9DpbRIq0KzFi3l6jddcsgk2QeRtMawTx91jCs0eI3ilGAa5wCDGC3ieGMaUlFVSSO8e5tN569J-LK4n0bR8_zxMlNRh3vKpeKi-Q-HSW8wWffICwwPusHQVGTZoW99zXn7wIQSRUnzTA_ZrgXGoNZYYgxEHzMqNjHEbK_raKV41LAUiBIVmlBt2-E4DCSQJS2kzm4pA7KDLyDBeGiPbMsdO659awWeZ0IDxHaGju97gW1bvue6jj_am_DNuSZYw6APf-QEvucHWoFZrj9h1i9BtwvdE--doPWx_wGKhxeH?type=png)](https://mermaid.live/edit#pako:eNqtk8FOg0AQhl-FzEkjbYBSkD00Mdqoh7ZEvGhIyArTlhR26-5CxKbv7gLtpT2YVOe0mZ3_2z87MztIeYZAQOJnhSzFh5yuBC1jZujY0OWGGoPJ5GZLmxKZGkgUdZ4iSTmTVYlXXGQoQsFTlDJnq2mti6578YlEU04hNS3yjCrsVH9DpbRIq0KzFi3l6jddcsgk2QeRtMawTx91jCs0eI3ilGAa5wCDGC3ieGMaUlFVSSO8e5tN569J-LK4n0bR8_zxMlNRh3vKpeKi-Q-HSW8wWffICwwPusHQVGTZoW99zXn7wIQSRUnzTA_ZrgXGoNZYYgxEHzMqNjHEbK_raKV41LAUiBIVmlBt2-E4DCSQJS2kzm4pA7KDLyDBeGiPbMsdO659awWeZ0IDxHaGju97gW1bvue6jj_am_DNuSZYw6APf-QEvucHWoFZrj9h1i9BtwvdE--doPWx_wGKhxeH)
+
+```
+sequenceDiagram
+    client->>+order-service: getOrderStatus()
+    order-service->>+order_service_db:getOrderStatus()
     order_service_db-->>-order-service: orderStatus
     order-service-->>-client: orderStatus
 ```
