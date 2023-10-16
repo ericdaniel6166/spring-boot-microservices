@@ -84,7 +84,7 @@ services:
       - discovery-server
       - api-gateway
       - broker
-  #      - zipkin
+      - zipkin
 
   payment-service:
     container_name: payment-service
@@ -104,7 +104,7 @@ services:
       - discovery-server
       - api-gateway
       - broker
-  #      - zipkin
+      - zipkin
 
   product-service:
     container_name: product-service
@@ -124,7 +124,7 @@ services:
       - discovery-server
       - api-gateway
       - broker
-  #      - zipkin
+      - zipkin
 
   inventory-service:
     container_name: inventory-service
@@ -144,7 +144,7 @@ services:
       - discovery-server
       - api-gateway
       - broker
-  #      - zipkin
+      - zipkin
 
   notification-service:
     container_name: notification-service
@@ -163,7 +163,7 @@ services:
       - discovery-server
       - api-gateway
       - broker
-  #      - zipkin
+      - zipkin
 
   discovery-server:
     container_name: discovery-server
@@ -178,8 +178,8 @@ services:
       - my-network
     expose:
       - "8761"
-  #    depends_on:
-  #      - zipkin
+    depends_on:
+      - zipkin
 
   api-gateway:
     container_name: api-gateway
@@ -196,7 +196,7 @@ services:
       - my-network
     depends_on:
       - discovery-server
-  #      - zipkin
+      - zipkin
   #      - keycloak
 
   #  keycloak:
@@ -210,6 +210,15 @@ services:
   #      - "8080:8080"
   #    volumes:
   #      - ./realms/:/opt/keycloak/data/import/
+
+  zipkin:
+    image: openzipkin/zipkin:2.24.3
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - my-network
+
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.0.1

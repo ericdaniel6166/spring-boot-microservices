@@ -2,10 +2,10 @@ package com.example.springbootmicroservicesframework.exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
