@@ -3,14 +3,14 @@ package com.example.springbootmicroservicesframework.dto;
 import com.example.springbootmicroservicesframework.utils.Const;
 import com.example.springbootmicroservicesframework.utils.PageUtils;
 import com.example.springbootmicroservicesframework.validation.ValidEnum;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)

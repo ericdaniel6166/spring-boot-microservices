@@ -2,14 +2,14 @@ package com.example.springbootmicroservicesframework.dto;
 
 import com.example.springbootmicroservicesframework.utils.Const;
 import com.example.springbootmicroservicesframework.validation.ValidEnum;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Sort;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
 import java.util.Collections;
 import java.util.List;
 

@@ -2,6 +2,9 @@ package com.example.springbootmicroservicesframework.exception;
 
 import com.example.springbootmicroservicesframework.config.tracing.TraceIdContext;
 import com.example.springbootmicroservicesframework.utils.Const;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -24,9 +27,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -37,7 +37,7 @@ import java.util.List;
 @Slf4j
 public class RestExceptionHandler {
 
-    static final String KEY_FIELD_TEMPLATE = "%s.%s";
+    static final String KEY_TEMPLATE = "%s.%s";
     static final String KEY_CLASS_TEMPLATE = "%s.%s.%s";
 
     final MessageSource messageSource;
@@ -58,6 +58,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e, HttpServletRequest httpServletRequest, HandlerMethod handlerMethod) {
+        log.info("handleConstraintViolationException");
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
                 ErrorCode.VALIDATION_ERROR.name(), null, httpServletRequest, null);
         List<ErrorDetail> errorDetails = e.getConstraintViolations().stream()
@@ -70,12 +71,11 @@ public class RestExceptionHandler {
 
     private ErrorDetail mapToErrorDetail(ConstraintViolation<?> constraintViolation, String apiClassName) {
         String propertyPath = constraintViolation.getPropertyPath().toString();
-        String keyClass = String.format(KEY_FIELD_TEMPLATE, apiClassName, propertyPath);
+        String keyClass = String.format(KEY_TEMPLATE, apiClassName, propertyPath);
         String[] parts = propertyPath.split("\\.");
         Assert.isTrue(parts.length > 1, "parts length must be greater than 1");
         String field = parts[parts.length - 1];
-        String keyField = String.format(KEY_FIELD_TEMPLATE, Const.COMMON, field);
-        Assert.notNull(keyField, "keyField must be not null");
+        String keyField = String.format(KEY_TEMPLATE, Const.COMMON, field);
         String model = getModel(keyClass, keyField);
         MessageFormat messageFormat = new MessageFormat(constraintViolation.getMessage());
         String msg = messageFormat.format(new Object[]{model});
@@ -85,7 +85,7 @@ public class RestExceptionHandler {
 
     private ErrorDetail mapToErrorDetail(FieldError fieldError, String apiClassName) {
         String keyClass = String.format(KEY_CLASS_TEMPLATE, apiClassName, fieldError.getObjectName(), fieldError.getField());
-        String keyField = String.format(KEY_FIELD_TEMPLATE, Const.COMMON, fieldError.getField());
+        String keyField = String.format(KEY_TEMPLATE, Const.COMMON, fieldError.getField());
         String model = getModel(keyClass, keyField);
         String messageTemplate = null;
         for (String errorCode : fieldError.getCodes()) {
@@ -110,7 +110,7 @@ public class RestExceptionHandler {
     public ResponseEntity<Object> handleBindException(BindException e, HttpServletRequest httpServletRequest, HandlerMethod handlerMethod) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
                 ErrorCode.VALIDATION_ERROR.name(), null, httpServletRequest, null);
-
+        log.info("handleBindException");
         List<ErrorDetail> errorDetails = e.getBindingResult().getAllErrors().stream()
                 .filter(FieldError.class::isInstance)
                 .map(error -> mapToErrorDetail((FieldError) error, handlerMethod.getBeanType().getSimpleName()))
@@ -141,7 +141,7 @@ public class RestExceptionHandler {
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<Object> handleResponseStatusException(ResponseStatusException e, HttpServletRequest httpServletRequest) {
         String errorMessage = getRootCauseMessage(e);
-        ErrorResponse errorResponse = new ErrorResponse(e.getStatus(), e.getStatus().name(),
+        ErrorResponse errorResponse = new ErrorResponse((HttpStatus) e.getStatusCode(), ((HttpStatus) e.getStatusCode()).name(),
                 errorMessage, httpServletRequest, null);
         return buildResponseExceptionEntity(errorResponse);
     }

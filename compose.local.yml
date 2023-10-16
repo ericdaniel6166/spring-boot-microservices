@@ -66,6 +66,14 @@ services:
       - my-network
     restart: always
 
+  zipkin:
+    image: openzipkin/zipkin:2.24.3
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - my-network
+
   #  keycloak:
   #    image: quay.io/keycloak/keycloak:22.0.1
   #    container_name: keycloak
