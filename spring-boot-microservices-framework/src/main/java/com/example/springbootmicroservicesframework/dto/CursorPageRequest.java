@@ -2,7 +2,7 @@ package com.example.springbootmicroservicesframework.dto;
 
 import com.example.springbootmicroservicesframework.utils.Const;
 import com.example.springbootmicroservicesframework.utils.PageUtils;
-import com.example.springbootmicroservicesframework.validation.ValidEnum;
+import com.example.springbootmicroservicesframework.validation.ValidEnumString;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
@@ -22,7 +22,7 @@ public class CursorPageRequest {
 
     String sortColumn = Const.ID;
 
-    @ValidEnum(enumClass = Sort.Direction.class, caseSensitive = false)
+    @ValidEnumString(value = Sort.Direction.class, caseSensitive = false)
     String sortDirection = Sort.Direction.ASC.name();
 
     String nextPageCursor;

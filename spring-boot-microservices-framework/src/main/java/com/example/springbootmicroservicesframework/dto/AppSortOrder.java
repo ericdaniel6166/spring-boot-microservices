@@ -1,6 +1,7 @@
 package com.example.springbootmicroservicesframework.dto;
 
-import com.example.springbootmicroservicesframework.validation.ValidEnum;
+import com.example.springbootmicroservicesframework.utils.Const;
+import com.example.springbootmicroservicesframework.validation.ValidEnumString;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,9 +20,10 @@ import org.springframework.data.domain.Sort;
 public class AppSortOrder {
 
     @NotBlank
-    String sortColumn;
+    String sortColumn = Const.ID;
 
-    @ValidEnum(enumClass = Sort.Direction.class, caseSensitive = false)
+    @NotBlank
+    @ValidEnumString(value = Sort.Direction.class, caseSensitive = false)
     String sortDirection = Sort.Direction.ASC.name();
 
     public Sort.Order mapToSortOrder() {

@@ -4,7 +4,6 @@ import com.example.springbootmicroservicesframework.dto.CursorPageResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -18,15 +17,10 @@ import java.util.Objects;
 @Slf4j
 public final class PageUtils {
 
-    public static final Sort.Order DEFAULT_SORT_ORDER = new Sort.Order(Sort.Direction.ASC, Const.ID);
-
     private PageUtils() {
         throw new IllegalStateException("Utility class");
     }
 
-    public static <T> PageImpl<T> buildAppPageImpl(Integer pageNumber, Integer pageSize, Sort sort, long totalElement, List<T> list) {
-        return new PageImpl<>(list, PageRequest.of(pageNumber, pageSize, sort), totalElement);
-    }
 
     public static Pageable buildPageable(Integer pageNumber, Integer size, Sort sort) {
         return PageRequest.of(pageNumber - 1, size, sort);
@@ -36,7 +30,7 @@ public final class PageUtils {
         if (orders.stream().anyMatch(order -> StringUtils.equals(order.getProperty(), Const.ID))) {
             return;
         }
-        orders.add(DEFAULT_SORT_ORDER);
+        orders.add(Const.DEFAULT_SORT_ORDER);
     }
 
     public static <T> CursorPageResponse<T> buildBlankCursorPageResponse(Page<?> page) {

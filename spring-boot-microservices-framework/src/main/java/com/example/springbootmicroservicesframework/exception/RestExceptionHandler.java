@@ -2,6 +2,7 @@ package com.example.springbootmicroservicesframework.exception;
 
 import com.example.springbootmicroservicesframework.config.tracing.TraceIdContext;
 import com.example.springbootmicroservicesframework.utils.Const;
+import com.example.springbootmicroservicesframework.utils.MessageConstant;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -11,7 +12,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.flywaydb.core.internal.util.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -22,13 +23,16 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @RestControllerAdvice
@@ -39,6 +43,7 @@ public class RestExceptionHandler {
 
     static final String KEY_TEMPLATE = "%s.%s";
     static final String KEY_CLASS_TEMPLATE = "%s.%s.%s";
+
 
     final MessageSource messageSource;
     final TraceIdContext traceIdContext;
@@ -105,6 +110,40 @@ public class RestExceptionHandler {
                 fieldError.getRejectedValue(), StringUtils.capitalize(msg));
     }
 
+    private ErrorDetail mapToErrorDetail(String apiClassName, MethodArgumentTypeMismatchException e, String methodName) {
+        String parameterName = e.getParameter().getParameterName();
+        String keyClass = String.format(KEY_CLASS_TEMPLATE, apiClassName, methodName, parameterName);
+        String keyField = String.format(KEY_TEMPLATE, Const.COMMON, parameterName);
+        String model = getModel(keyClass, keyField);
+        String errorCode = String.format(KEY_TEMPLATE, e.getErrorCode(), e.getRequiredType().getName());
+        String message = getErrormessage(model, errorCode, e.getMessage());
+        return new ValidationErrorDetail(keyClass, parameterName,
+                e.getValue(), StringUtils.capitalize(message));
+    }
+
+    private ErrorDetail mapMissingServletRequestParameterExceptionToErrorDetail(String apiClassName, MissingServletRequestParameterException e, String methodName) {
+        String parameterName = e.getParameterName();
+        String keyClass = String.format(KEY_CLASS_TEMPLATE, apiClassName, methodName, parameterName);
+        String keyField = String.format(KEY_TEMPLATE, Const.COMMON, parameterName);
+        String model = getModel(keyClass, keyField);
+        String message = getErrormessage(model, MessageConstant.MSG_ERR_CONSTRAINS_REQUIRED, e.getMessage());
+        return new ValidationErrorDetail(keyClass, parameterName,
+                null, StringUtils.capitalize(message));
+    }
+
+    private String getErrormessage(String model, String errorCode, String message) {
+        String messageTemplate = null;
+        try {
+            messageTemplate = messageSource.getMessage(errorCode, null, LocaleContextHolder.getLocale());
+        } catch (NoSuchMessageException ignored) {
+        }
+        if (StringUtils.isBlank(messageTemplate)) {
+            messageTemplate = message;
+        }
+        MessageFormat messageFormat = new MessageFormat(messageTemplate);
+        return messageFormat.format(new Object[]{model});
+    }
+
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<Object> handleBindException(BindException e, HttpServletRequest httpServletRequest, HandlerMethod handlerMethod) {
@@ -117,6 +156,28 @@ public class RestExceptionHandler {
                 .toList();
         errorResponse.setErrorDetails(errorDetails);
 
+        return buildResponseExceptionEntity(errorResponse);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Object> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e, HttpServletRequest httpServletRequest, HandlerMethod handlerMethod) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
+                ErrorCode.VALIDATION_ERROR.name(), null, httpServletRequest, null);
+        log.info("handleMethodArgumentTypeMismatchException");
+        List<ErrorDetail> errorDetails = Collections.singletonList(mapToErrorDetail(
+                handlerMethod.getBeanType().getSimpleName(), e, handlerMethod.getMethod().getName()));
+        errorResponse.setErrorDetails(errorDetails);
+        return buildResponseExceptionEntity(errorResponse);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<Object> handleMissingServletRequestParameterException(MissingServletRequestParameterException e, HttpServletRequest httpServletRequest, HandlerMethod handlerMethod) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
+                ErrorCode.VALIDATION_ERROR.name(), null, httpServletRequest, null);
+        log.info("handleMissingServletRequestParameterException");
+        List<ErrorDetail> errorDetails = Collections.singletonList(mapMissingServletRequestParameterExceptionToErrorDetail(
+                handlerMethod.getBeanType().getSimpleName(), e, handlerMethod.getMethod().getName()));
+        errorResponse.setErrorDetails(errorDetails);
         return buildResponseExceptionEntity(errorResponse);
     }
 
