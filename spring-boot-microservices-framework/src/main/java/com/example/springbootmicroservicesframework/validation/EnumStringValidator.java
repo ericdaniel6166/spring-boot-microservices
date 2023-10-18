@@ -1,7 +1,5 @@
 package com.example.springbootmicroservicesframework.validation;
 
-import com.example.springbootmicroservicesframework.utils.Const;
-import com.example.springbootmicroservicesframework.utils.MessageConstant;
 import com.example.springbootmicroservicesframework.utils.ValidationUtils;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -12,45 +10,41 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class EnumValidator implements ConstraintValidator<ValidEnum, String> {
+public class EnumStringValidator implements ConstraintValidator<ValidEnumString, String> {
 
     final ValidationUtils validationUtils;
     List<String> valueList;
     boolean caseSensitive;
+    boolean checkNotBlank;
     String message;
     String messageCode;
     String[] messageParams;
 
     @Override
-    public void initialize(ValidEnum constraintAnnotation) {
-        valueList = Stream.of(constraintAnnotation.enumClass().getEnumConstants())
+    public void initialize(ValidEnumString constraintAnnotation) {
+        valueList = Stream.of(constraintAnnotation.value().getEnumConstants())
                 .map(Enum::name)
                 .toList();
         caseSensitive = constraintAnnotation.caseSensitive();
         message = constraintAnnotation.message();
         messageCode = constraintAnnotation.messageCode();
         messageParams = constraintAnnotation.messageParams();
+        checkNotBlank = constraintAnnotation.checkNotBlank();
     }
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        if (StringUtils.isBlank(s)) {
+        if (StringUtils.isBlank(s) && !checkNotBlank) {
             return true;
         }
-        boolean isValid = valueList.contains(s);
-        if (!caseSensitive) {
+        boolean isValid;
+        if (caseSensitive) {
+            isValid = valueList.contains(s);
+        } else {
             isValid = valueList.contains(s.toUpperCase());
         }
-        if (!isValid && StringUtils.isBlank(message)) {
-            if (messageParams.length == 0 && StringUtils.isBlank(messageCode)) {
-                validationUtils.addViolation(constraintValidatorContext,
-                        MessageConstant.MSG_ERR_COMMON_TYPE_MISMATCH_ENUM,
-                        new String[]{Const.PLACEHOLDER_0, valueList.toString()});
-            } else {
-                validationUtils.addViolation(constraintValidatorContext, messageCode, messageParams);
-            }
-        }
-        return isValid;
+        return validationUtils.handleConstrainsValidValue(constraintValidatorContext, isValid, message, messageParams, messageCode, valueList);
     }
+
 
 }

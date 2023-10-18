@@ -13,17 +13,18 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Constraint(
-        validatedBy = {EnumValidator.class}
+        validatedBy = {StringValidator.class}
 )
-public @interface ValidEnum {
-
-    Class<? extends Enum<?>> enumClass();
+public @interface ValidString {
+    String[] values() default {};
 
     boolean caseSensitive() default true;
 
     String message() default "";
 
     String messageCode() default "";
+
+    boolean checkNotBlank() default false;
 
     String[] messageParams() default {};
 

@@ -4,9 +4,10 @@ import jakarta.validation.ConstraintValidatorContext;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -14,11 +15,18 @@ import org.springframework.stereotype.Component;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ValidationUtils {
 
-    final MessageSource messageSource;
+    final MessageUtils messageUtils;
 
-    public void addViolation(ConstraintValidatorContext constraintValidatorContext, String messageCode, String[] messageParams) {
-        constraintValidatorContext.disableDefaultConstraintViolation();
-        String message = messageSource.getMessage(messageCode, messageParams, LocaleContextHolder.getLocale());
-        constraintValidatorContext.buildConstraintViolationWithTemplate(message).addConstraintViolation();
+    public boolean handleConstrainsValidValue(ConstraintValidatorContext constraintValidatorContext, boolean isValid, String message, String[] messageParams, String messageCode, List<String> valueList) {
+        if (!isValid && StringUtils.isBlank(message)) {
+            if (messageParams.length == 0 && StringUtils.isBlank(messageCode)) {
+                messageUtils.addViolation(constraintValidatorContext,
+                        MessageConstant.MSG_ERR_CONSTRAINS_VALID_VALUE,
+                        new String[]{Const.PLACEHOLDER_0, valueList.toString()});
+            } else {
+                messageUtils.addViolation(constraintValidatorContext, messageCode, messageParams);
+            }
+        }
+        return isValid;
     }
 }
