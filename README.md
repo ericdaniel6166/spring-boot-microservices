@@ -88,6 +88,12 @@ make local-up
 make local-down
 ```
 
+##### Swagger
+
+http://localhost:8181/swagger-ui.html
+![img.png](img.png)
+![img_1.png](img_1.png)
+
 ## Sequence diagrams (Updating...)
 
 - Using mermaid.live
