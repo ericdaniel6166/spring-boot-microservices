@@ -10,14 +10,14 @@ import org.springframework.kafka.listener.MessageListenerContainer;
 public class GlobalErrorHandler implements CommonErrorHandler {
 
     @Override
-    public void handleRecord(Exception thrownException, ConsumerRecord<?, ?> record, Consumer<?, ?> consumer, MessageListenerContainer container) {
-        CommonErrorHandler.super.handleRecord(thrownException, record, consumer, container);
-        log.warn("Global error handler for message: {}", record.value().toString());
+    public boolean handleOne(Exception thrownException, ConsumerRecord<?, ?> record, Consumer<?, ?> consumer, MessageListenerContainer container) {
+        log.info("Global error handler for message: {}", record.value().toString());
+        return CommonErrorHandler.super.handleOne(thrownException, record, consumer, container);
     }
 
     @Override
     public void handleOtherException(Exception thrownException, Consumer<?, ?> consumer, MessageListenerContainer container, boolean batchListener) {
+        log.info("Global error handler for consumer: {}", consumer);
         CommonErrorHandler.super.handleOtherException(thrownException, consumer, container, batchListener);
-        log.warn("Global error handler for consumer: {}", consumer);
     }
 }
