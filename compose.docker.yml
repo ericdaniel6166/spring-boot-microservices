@@ -14,7 +14,7 @@ services:
     volumes:
       - postgres-order-data:/var/lib/postgresql/data
     networks:
-      - my-network
+      - internal-network
     restart: always
 
   postgres-payment:
@@ -31,7 +31,7 @@ services:
     volumes:
       - postgres-payment-data:/var/lib/postgresql/data
     networks:
-      - my-network
+      - internal-network
     restart: always
 
   postgres-product:
@@ -48,7 +48,7 @@ services:
     volumes:
       - postgres-product-data:/var/lib/postgresql/data
     networks:
-      - my-network
+      - internal-network
     restart: always
 
   postgres-inventory:
@@ -63,7 +63,7 @@ services:
     volumes:
       - postgres-inventory-data:/var/lib/postgresql/data
     networks:
-      - my-network
+      - internal-network
     restart: always
 
   order-service:
@@ -78,12 +78,13 @@ services:
     expose:
       - "8082"
     networks:
-      - my-network
+      - internal-network
     depends_on:
       - postgres-order
       - discovery-server
       - api-gateway
       - broker
+      - activemq
       - zipkin
 
   payment-service:
@@ -98,12 +99,13 @@ services:
     expose:
       - "8085"
     networks:
-      - my-network
+      - internal-network
     depends_on:
       - postgres-payment
       - discovery-server
       - api-gateway
       - broker
+      - activemq
       - zipkin
 
   product-service:
@@ -118,12 +120,13 @@ services:
     expose:
       - "8081"
     networks:
-      - my-network
+      - internal-network
     depends_on:
       - postgres-product
       - discovery-server
       - api-gateway
       - broker
+      - activemq
       - zipkin
 
   inventory-service:
@@ -138,12 +141,13 @@ services:
     expose:
       - "8083"
     networks:
-      - my-network
+      - internal-network
     depends_on:
       - postgres-inventory
       - discovery-server
       - api-gateway
       - broker
+      - activemq
       - zipkin
 
   notification-service:
@@ -158,11 +162,12 @@ services:
     expose:
       - "8084"
     networks:
-      - my-network
+      - internal-network
     depends_on:
       - discovery-server
       - api-gateway
       - broker
+      - activemq
       - zipkin
 
   discovery-server:
@@ -175,7 +180,7 @@ services:
     ports:
       - "8761:8761"
     networks:
-      - my-network
+      - internal-network
     expose:
       - "8761"
     depends_on:
@@ -193,7 +198,7 @@ services:
     expose:
       - "8181"
     networks:
-      - my-network
+      - internal-network
     depends_on:
       - discovery-server
       - zipkin
@@ -217,7 +222,7 @@ services:
     ports:
       - "9411:9411"
     networks:
-      - my-network
+      - internal-network
 
 
   zookeeper:
@@ -226,7 +231,7 @@ services:
     ports:
       - "2181:2181"
     networks:
-      - my-network
+      - internal-network
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -237,7 +242,7 @@ services:
     ports:
       - "9092:9092"
     networks:
-      - my-network
+      - internal-network
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
@@ -249,11 +254,34 @@ services:
     depends_on:
       - zookeeper
 
+  activemq:
+    image: symptoma/activemq:5.15.13
+    container_name: activemq
+    ports:
+      - "8161:8161" # Web Console
+      - "61616:61616" # OpenWire
+      - "5672:5672" # AMQP
+      - "61613:61613" # STOMP
+      - "1883:1883"   # MQTT
+    networks:
+      - internal-network
+    environment:
+      ACTIVEMQ_USERNAME: system
+      ACTIVEMQ_PASSWORD: manager
+      ACTIVEMQ_WEBADMIN_USERNAME: admin
+      ACTIVEMQ_WEBADMIN_PASSWORD: admin
+    volumes:
+      - activemq-data:/data/activemq
+      - activemq-log:/var/log/activemq
+
+
 networks:
-  my-network:
+  internal-network:
 
 volumes:
   postgres-product-data:
   postgres-order-data:
   postgres-payment-data:
   postgres-inventory-data:
+  activemq-data:
+  activemq-log:
