@@ -93,7 +93,7 @@ http://localhost:8181/swagger-ui.html
 ## Sequence diagrams (Updating...)
 
 - Using mermaid.live
-  [![](https://mermaid.ink/img/pako:eNrVV11v2jAU_SuWn0ANFQHaQh4qsRVtSOVDBU3ahBS5yYVaJDZLnGgU8d_nxKGQL760hy4PKNg-J-fee66dbLDFbcAG9uF3AMyCJ0oWHnFnDMnLcigwUXt8vOGeDV7NBy-kFhho5RALKvHgSwT0RVUhUuskMIMLiUNtIiABnc1gJv9N-9VAPglhFI1WqkhhGBeAeAheGq2hLBgpNBJmPKMhXxAR-GjcGz71h99m7GINk5jgO_UF99aV6pV6kvGYy3xTZHlxkrlY35LMl0RSAbNVSsfyjrJFL5TlK8yrBNVUdQ01o-I4Ib8AkU1dLCVyDGXRw2Uc--pbnPmBC6US1W8OmGJLVWEBor-b6LM5z-c_R6ahUio097i7n9bQyuN2YImMrANYnMaCQOmhqF1miuIqwO5apC_A7YaEOuTVgSgwxUIcgaivVqmRMu68KTxuge9nkn5YtHS3pstVCiaWoCERkDbLfj5r1ptcNwWrKOCkpffAS7pIUeT7-mX0tTeZ7LoH7V12nrLjbX6RSOOMRj-q1oayTKs14PgQWUMqOscetZw_IscNufgw3RUuOUXxmb3Sn_YG5nA0Nbs_uv3n7pfn3v_gmfNUl3sndg6zUWr_RlFgK7J2o9P_gu0gA5EsORLiWIGTrWApLpuLsRrO7_MZBg3lCXZnbTKz77ruz0FvODWz3XepqBNvApcrLN0mzhac7_FEa3H5Pmp_7Bw4RnDMZFe19r84Akqy9cne8UpUljUu1rALnkuoLd_dN9HaGRZv4MIMG_LWJt5yhmdsK9eRQPDJmlnYEF4AGlZ5St7zd4MrwrCxwX-w0Wjd39brDf1Br7d1vdNuaXiNjeZtS39otPV2_b7Z7Nw19a2G3zmXeF2uVtf9nd7o6PWGhsGmMrqB-rKIPzDiJ_yKAdEDt38B6j9Zwg?type=png)](https://mermaid.live/edit#pako:eNrVV11v2jAU_SuWn0ANFQHaQh4qsRVtSOVDBU3ahBS5yYVaJDZLnGgU8d_nxKGQL760hy4PKNg-J-fee66dbLDFbcAG9uF3AMyCJ0oWHnFnDMnLcigwUXt8vOGeDV7NBy-kFhho5RALKvHgSwT0RVUhUuskMIMLiUNtIiABnc1gJv9N-9VAPglhFI1WqkhhGBeAeAheGq2hLBgpNBJmPKMhXxAR-GjcGz71h99m7GINk5jgO_UF99aV6pV6kvGYy3xTZHlxkrlY35LMl0RSAbNVSsfyjrJFL5TlK8yrBNVUdQ01o-I4Ib8AkU1dLCVyDGXRw2Uc--pbnPmBC6US1W8OmGJLVWEBor-b6LM5z-c_R6ahUio097i7n9bQyuN2YImMrANYnMaCQOmhqF1miuIqwO5apC_A7YaEOuTVgSgwxUIcgaivVqmRMu68KTxuge9nkn5YtHS3pstVCiaWoCERkDbLfj5r1ptcNwWrKOCkpffAS7pIUeT7-mX0tTeZ7LoH7V12nrLjbX6RSOOMRj-q1oayTKs14PgQWUMqOscetZw_IscNufgw3RUuOUXxmb3Sn_YG5nA0Nbs_uv3n7pfn3v_gmfNUl3sndg6zUWr_RlFgK7J2o9P_gu0gA5EsORLiWIGTrWApLpuLsRrO7_MZBg3lCXZnbTKz77ruz0FvODWz3XepqBNvApcrLN0mzhac7_FEa3H5Pmp_7Bw4RnDMZFe19r84Akqy9cne8UpUljUu1rALnkuoLd_dN9HaGRZv4MIMG_LWJt5yhmdsK9eRQPDJmlnYEF4AGlZ5St7zd4MrwrCxwX-w0Wjd39brDf1Br7d1vdNuaXiNjeZtS39otPV2_b7Z7Nw19a2G3zmXeF2uVtf9nd7o6PWGhsGmMrqB-rKIPzDiJ_yKAdEDt38B6j9Zwg)
+  [![](https://mermaid.ink/img/pako:eNrVV11v2jAU_SuWn4oaKsI3eajEVrQhtVAVNGkTUuQmlzYisVniRKNV__ucOHzkw0DQHrq-NFz7nHvse66dvGOL2YANHMDvEKgFdw558Ym3oEj8Wa4DlNdvb6-Zb4NfD8CPHAsMtHaJBVdJ8CkGBrwmEZl5ApjDRcR1bMIhBZ3NYKa_TfvZQAGJYBpHr2pIYijjgFgEfhatoTwYSTTiZjKioYATHgbocTS5G0--LWhlDbOE4LsTcOZvrmoX6knjCZf5KsmK4gRzub4VWa6IoAJqyy19FE8OfRlFonyl-ypAdVldQ47IdZyQX4LIqEvlOTTOK5ZQlGgxGoQeKFUSizuRMEiR41SC610wU6gX4OPtwJguWbFEBTINKanQ0mfeflhDa5_ZocVzsg5gyU4XUhj7ubGore_K1lWC3XbRmIM3jIjjkmcX4oWle-hy5ARyloycKMqBb3xmQRDkiqK2XLacSvCuqhkWNfl1oeHCdbzgtOv3wCqNJimKrf80_TqazXYW3rvsPGXHT4JKIo0zzoKjam1Q7bScA24AsTWEoovsERtuwvjOc_k6H-RX9O-ZVjqV6DMbajwfPZiT6dwc_hiO74df7kf_g7HOU602WGIvaqPtMS3_r8nGi98g0mmoysGxy5QjKWUWxLmIYRHXCt18kZW4_HY9ynDxvsgxaKhIsL3W05F99w5_PowmczPfxVVFnXjpqK5QedycLbh4lcgp5bU98FFpdTPmUrnmWIJjNr3ocPgXN41iMz_Z26ZCpar1sYY98D3i2OIr4j2eu8D8FTxYYEM82sRfLfCCfoh5JORstqEWNpZE3EQalhuVfnLsomtCsfGO_2CjrjcaN_2u3tGb7Va3rfcaXQ1v4ni3dzNo9Dvdfr_VHDSbrdaHht8YEyT6Ta-nd7p6uzVottpt8aBhsB2xxgf5pZN88CRZfiUA7ofw8Rer1Iu2?type=png)](https://mermaid.live/edit#pako:eNrVV11v2jAU_SuWn4oaKsI3eajEVrQhtVAVNGkTUuQmlzYisVniRKNV__ucOHzkw0DQHrq-NFz7nHvse66dvGOL2YANHMDvEKgFdw558Ym3oEj8Wa4DlNdvb6-Zb4NfD8CPHAsMtHaJBVdJ8CkGBrwmEZl5ApjDRcR1bMIhBZ3NYKa_TfvZQAGJYBpHr2pIYijjgFgEfhatoTwYSTTiZjKioYATHgbocTS5G0--LWhlDbOE4LsTcOZvrmoX6knjCZf5KsmK4gRzub4VWa6IoAJqyy19FE8OfRlFonyl-ypAdVldQ47IdZyQX4LIqEvlOTTOK5ZQlGgxGoQeKFUSizuRMEiR41SC610wU6gX4OPtwJguWbFEBTINKanQ0mfeflhDa5_ZocVzsg5gyU4XUhj7ubGore_K1lWC3XbRmIM3jIjjkmcX4oWle-hy5ARyloycKMqBb3xmQRDkiqK2XLacSvCuqhkWNfl1oeHCdbzgtOv3wCqNJimKrf80_TqazXYW3rvsPGXHT4JKIo0zzoKjam1Q7bScA24AsTWEoovsERtuwvjOc_k6H-RX9O-ZVjqV6DMbajwfPZiT6dwc_hiO74df7kf_g7HOU602WGIvaqPtMS3_r8nGi98g0mmoysGxy5QjKWUWxLmIYRHXCt18kZW4_HY9ynDxvsgxaKhIsL3W05F99w5_PowmczPfxVVFnXjpqK5QedycLbh4lcgp5bU98FFpdTPmUrnmWIJjNr3ocPgXN41iMz_Z26ZCpar1sYY98D3i2OIr4j2eu8D8FTxYYEM82sRfLfCCfoh5JORstqEWNpZE3EQalhuVfnLsomtCsfGO_2CjrjcaN_2u3tGb7Va3rfcaXQ1v4ni3dzNo9Dvdfr_VHDSbrdaHht8YEyT6Ta-nd7p6uzVottpt8aBhsB2xxgf5pZN88CRZfiUA7ofw8Rer1Iu2)
 
 ```
 sequenceDiagram
@@ -108,8 +108,9 @@ sequenceDiagram
     order-service->>kafka: send(orderPendingEvent)
     order-service-->>-client: orderStatus
     note over order-service, client: orderStatus PENDING
-
-    kafka->>+inventory-service: consume(orderPendingEvent)
+    
+    inventory-service->>kafka: consume(orderPendingEvent)
+    activate inventory-service
     
     inventory-service->>+inventory_service_db: getInventoryInfo()
     note over inventory-service, inventory_service_db: get from inventory, product
@@ -119,7 +120,7 @@ sequenceDiagram
 
     alt is valid
         inventory-service->>kafka: send(orderProcessingEvent)
-        kafka->>order-service:consume(orderProcessingEvent)
+        order-service->>kafka:consume(orderProcessingEvent)
         activate order-service
         order-service->>+order_service_db:updateOrder()
         note over order-service, order_service_db : update t_order, status PROCESSING
@@ -130,8 +131,9 @@ sequenceDiagram
         deactivate order-service
 
     else is not valid
-        inventory-service->>-kafka: send(orderItemNotAvailableEvent)
-        kafka->>order-service:consume(orderItemNotAvailableEvent)
+        inventory-service->>kafka: send(orderItemNotAvailableEvent)
+        deactivate inventory-service
+        order-service->>kafka:consume(orderItemNotAvailableEvent)
         activate order-service
         order-service->>+order_service_db:updateOrder()
         note over order-service, order_service_db : update t_order, status ITEM_NOT_AVAILABLE
@@ -141,15 +143,18 @@ sequenceDiagram
         
         deactivate order-service
     end 
+    
 
-    kafka ->>+payment-service:consume(orderProcessingEvent)
+    payment-service ->>kafka:consume(orderProcessingEvent)
+    activate payment-service
     payment-service->>payment-service:calculateOrder()
     payment-service->>payment_service_db:savePayment()
     note over payment-service, payment_service_db : save payment, status PAYMENT_PROCESSING
     payment-service->>payment_service_db:savePaymentStatusHistory()
     note over payment-service, payment_service_db : save payment_status_history, status PAYMENT_PROCESSING
-    payment-service->>-kafka: send(orderPaymentProcessingEvent)
-    kafka ->>order-service:consume(orderPaymentProcessingEvent)
+    payment-service->>kafka: send(orderPaymentProcessingEvent)
+    deactivate payment-service
+    order-service ->>kafka:consume(orderPaymentProcessingEvent)
     activate order-service
     order-service->>+order_service_db:updateOrder()
     note over order-service, order_service_db : update t_order, status PAYMENT_PROCESSING
