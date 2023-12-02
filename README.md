@@ -5,17 +5,18 @@
 - [Spring Boot](https://spring.io/projects/spring-boot) web framework, makes it easy to create stand-alone,
   production-grade Spring based Applications
 - [Apache Kafka](https://kafka.apache.org/) distributed and fault-tolerant stream processing system.
-- [Spring Cloud Netflix Eureka](https://spring.io/projects/spring-cloud-netflix) service discovery, allows services to
-  find and communicate with each other without hard-coding the hostname and port
+- [Spring Cloud Netflix Eureka](https://spring.io/projects/spring-cloud-netflix) service discovery, 
+allows services to find and communicate with each other without hard-coding the hostname and port
 - [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway) api gateway, provide a simple, yet effective
   way to route to APIs and provide cross-cutting concerns to them such as: security, monitoring/metrics, and resiliency.
-- [Resilience4j circuit breaker](https://github.com/resilience4j/resilience4j) library, helps prevent cascading failures
+- [Resilience4j](https://github.com/resilience4j/resilience4j) library, helps prevent cascading failures
   and provides mechanisms for graceful degradation and self-healing when external services experience issues
-- [Zipkin](https://zipkin.io/) open source, end-to-end distributed tracing
-- [Spring Cloud Sleuth](https://spring.io/projects/spring-cloud-sleuth) autoconfiguration for distributed tracing
-- [Docker](https://www.docker.com/) and docker-compose
-- [Spring Data JPA](https://spring.io/projects/spring-data-jpa) provides repository support for the Jakarta Persistence
-  API
+- [Zipkin](https://zipkin.io/) distributed tracing system, provides end-to-end visibility into how requests flow through the system, 
+helping troubleshoot issues in distributed architectures
+- ~~Spring Cloud Sleuth, autoconfiguration for distributed tracing~~
+- [Micrometer Tracing](https://micrometer.io/docs/tracing) with Brave, library for distributed tracing (update to Spring Boot 3.x)
+- [Docker](https://www.docker.com/) and docker-compose, for containerization
+- [Spring Data JPA](https://spring.io/projects/spring-data-jpa) provides repository support for the Jakarta Persistence API
 - [Flywaydb](https://flywaydb.org/) for migrations
 - [Keycloak](https://www.keycloak.org/) for providing authentication, user management, fine-grained authorization
 - [PostgreSQL](https://www.postgresql.org/)
@@ -36,15 +37,10 @@
     - discovery-server : https://github.com/ericdaniel6166/discovery-server
     - api-gateway : https://github.com/ericdaniel6166/api-gateway
     - product-service : https://github.com/ericdaniel6166/product-service
-        - cursor pagination
     - order-service : https://github.com/ericdaniel6166/order-service
-        - kafka
     - inventory-service : https://github.com/ericdaniel6166/inventory-service
-        - kafka
     - payment-service : https://github.com/ericdaniel6166/payment-service
-        - kafka
     - notification-service : https://github.com/ericdaniel6166/notification-service
-        - kafka
 
 - Make sure microservice repositories at directory as below, otherwise should change this for dev-environment setup
 
@@ -97,6 +93,7 @@ http://localhost:8181/swagger-ui.html
 ## Sequence diagrams (Updating...)
 
 - Using mermaid.live
+  [![](https://mermaid.ink/img/pako:eNrVV11v2jAU_SuWn0ANFQHaQh4qsRVtSOVDBU3ahBS5yYVaJDZLnGgU8d_nxKGQL760hy4PKNg-J-fee66dbLDFbcAG9uF3AMyCJ0oWHnFnDMnLcigwUXt8vOGeDV7NBy-kFhho5RALKvHgSwT0RVUhUuskMIMLiUNtIiABnc1gJv9N-9VAPglhFI1WqkhhGBeAeAheGq2hLBgpNBJmPKMhXxAR-GjcGz71h99m7GINk5jgO_UF99aV6pV6kvGYy3xTZHlxkrlY35LMl0RSAbNVSsfyjrJFL5TlK8yrBNVUdQ01o-I4Ib8AkU1dLCVyDGXRw2Uc--pbnPmBC6US1W8OmGJLVWEBor-b6LM5z-c_R6ahUio097i7n9bQyuN2YImMrANYnMaCQOmhqF1miuIqwO5apC_A7YaEOuTVgSgwxUIcgaivVqmRMu68KTxuge9nkn5YtHS3pstVCiaWoCERkDbLfj5r1ptcNwWrKOCkpffAS7pIUeT7-mX0tTeZ7LoH7V12nrLjbX6RSOOMRj-q1oayTKs14PgQWUMqOscetZw_IscNufgw3RUuOUXxmb3Sn_YG5nA0Nbs_uv3n7pfn3v_gmfNUl3sndg6zUWr_RlFgK7J2o9P_gu0gA5EsORLiWIGTrWApLpuLsRrO7_MZBg3lCXZnbTKz77ruz0FvODWz3XepqBNvApcrLN0mzhac7_FEa3H5Pmp_7Bw4RnDMZFe19r84Akqy9cne8UpUljUu1rALnkuoLd_dN9HaGRZv4MIMG_LWJt5yhmdsK9eRQPDJmlnYEF4AGlZ5St7zd4MrwrCxwX-w0Wjd39brDf1Br7d1vdNuaXiNjeZtS39otPV2_b7Z7Nw19a2G3zmXeF2uVtf9nd7o6PWGhsGmMrqB-rKIPzDiJ_yKAdEDt38B6j9Zwg?type=png)](https://mermaid.live/edit#pako:eNrVV11v2jAU_SuWn0ANFQHaQh4qsRVtSOVDBU3ahBS5yYVaJDZLnGgU8d_nxKGQL760hy4PKNg-J-fee66dbLDFbcAG9uF3AMyCJ0oWHnFnDMnLcigwUXt8vOGeDV7NBy-kFhho5RALKvHgSwT0RVUhUuskMIMLiUNtIiABnc1gJv9N-9VAPglhFI1WqkhhGBeAeAheGq2hLBgpNBJmPKMhXxAR-GjcGz71h99m7GINk5jgO_UF99aV6pV6kvGYy3xTZHlxkrlY35LMl0RSAbNVSsfyjrJFL5TlK8yrBNVUdQ01o-I4Ib8AkU1dLCVyDGXRw2Uc--pbnPmBC6US1W8OmGJLVWEBor-b6LM5z-c_R6ahUio097i7n9bQyuN2YImMrANYnMaCQOmhqF1miuIqwO5apC_A7YaEOuTVgSgwxUIcgaivVqmRMu68KTxuge9nkn5YtHS3pstVCiaWoCERkDbLfj5r1ptcNwWrKOCkpffAS7pIUeT7-mX0tTeZ7LoH7V12nrLjbX6RSOOMRj-q1oayTKs14PgQWUMqOscetZw_IscNufgw3RUuOUXxmb3Sn_YG5nA0Nbs_uv3n7pfn3v_gmfNUl3sndg6zUWr_RlFgK7J2o9P_gu0gA5EsORLiWIGTrWApLpuLsRrO7_MZBg3lCXZnbTKz77ruz0FvODWz3XepqBNvApcrLN0mzhac7_FEa3H5Pmp_7Bw4RnDMZFe19r84Akqy9cne8UpUljUu1rALnkuoLd_dN9HaGRZv4MIMG_LWJt5yhmdsK9eRQPDJmlnYEF4AGlZ5St7zd4MrwrCxwX-w0Wjd39brDf1Br7d1vdNuaXiNjeZtS39otPV2_b7Z7Nw19a2G3zmXeF2uVtf9nd7o6PWGhsGmMrqB-rKIPzDiJ_yKAdEDt38B6j9Zwg)
 
 ```
 sequenceDiagram
@@ -113,12 +110,12 @@ sequenceDiagram
     note over order-service, client: orderStatus PENDING
 
     kafka->>+inventory-service: consume(orderPendingEvent)
-    inventory-service->>inventory-service: validateEvent(orderPendingEvent)
+    
     inventory-service->>+inventory_service_db: getInventoryInfo()
     note over inventory-service, inventory_service_db: get from inventory, product
     inventory_service_db-->>-inventory-service: inventoryInfo
 
-    inventory-service->>inventory-service: validateItemAvailable(orderPendingEvent, inventoryInfo)
+    inventory-service->>inventory-service: validateItemAvailable()
 
     alt is valid
         inventory-service->>kafka: send(orderProcessingEvent)
@@ -132,7 +129,6 @@ sequenceDiagram
         
         deactivate order-service
 
-
     else is not valid
         inventory-service->>-kafka: send(orderItemNotAvailableEvent)
         kafka->>order-service:consume(orderItemNotAvailableEvent)
@@ -145,26 +141,24 @@ sequenceDiagram
         
         deactivate order-service
     end 
-```
 
-[![](https://mermaid.ink/img/pako:eNrVVtFu2jAU_RXLT6AGRBIYIQ-V2Io2pBaqUu1hioTc5EItEpslTjSG-Pc5NhmEQEv6tOXJufY5Pr73-Mpb7PMAsIsT-JkC8-GOkmVMIo8h-fkhBSZat7c3PA4gbiUQZ9QHF61D4kNDBZ9yYCKaGlFaJ4EnuIyENCAC9qCrGeb7_3nw4qKEZDDNo40m0hjGBSCeQVxGG-gUjDQaibmaMVAiiEgT9Dia3I0nXz1WW8NMEXyjieDxptH8oJ59XHHNXzVZVZxkPq9vRRYrIqmABTqlj3JE2XKUyfKdzasEtXR1XT2jz_GO_DOI09QpKbljKMs3l-c4VN_nLEkjuCixApE8Z2gKEyloLbKDqFIxlyDGxcSYLXi1jBUyA12kQouYR4dpA61jHqS-OJF1BFPVOHNQeiyqSHDNJI0FRMOM0JC8hGcyb5Q3aRa7kFAgmmgWHbm0d9V7MfchSU7KceyNclMou-IimPiCZkRA2ZOH-dM7cVO5tOk6T8i-cxyAdS6rpqi2j6fpl9FsVlxS9dVR9nY3qSXSvaKfvKk2gEuZLrwBYQK5OaSmawzSqjgk9-SEi7-2_IBP3qP4l90yfh49zCfT5_nw-3B8P_x8P_ofXHOd6svuUc5hAcIGjiCOCA3kq2Obxz0sXiECD7tyGJB45WGP7eQ6kgo-2zAfuyJOwcA6n_sXCnYXRBrRwGvCsLvFv7Dbsqxu23IGjmk6nZ5t2n3LwBsZt-1u2-45jj1wela_Z9o7A__mXHKY7UHfdD51zU7X6ncGds_AEFB58Af9LFKvI7XHD7U-F7L7A0ZoLxc?type=png)](https://mermaid.live/edit#pako:eNrVVtFu2jAU_RXLT6AGRBIYIQ-V2Io2pBaqUu1hioTc5EItEpslTjSG-Pc5NhmEQEv6tOXJufY5Pr73-Mpb7PMAsIsT-JkC8-GOkmVMIo8h-fkhBSZat7c3PA4gbiUQZ9QHF61D4kNDBZ9yYCKaGlFaJ4EnuIyENCAC9qCrGeb7_3nw4qKEZDDNo40m0hjGBSCeQVxGG-gUjDQaibmaMVAiiEgT9Dia3I0nXz1WW8NMEXyjieDxptH8oJ59XHHNXzVZVZxkPq9vRRYrIqmABTqlj3JE2XKUyfKdzasEtXR1XT2jz_GO_DOI09QpKbljKMs3l-c4VN_nLEkjuCixApE8Z2gKEyloLbKDqFIxlyDGxcSYLXi1jBUyA12kQouYR4dpA61jHqS-OJF1BFPVOHNQeiyqSHDNJI0FRMOM0JC8hGcyb5Q3aRa7kFAgmmgWHbm0d9V7MfchSU7KceyNclMou-IimPiCZkRA2ZOH-dM7cVO5tOk6T8i-cxyAdS6rpqi2j6fpl9FsVlxS9dVR9nY3qSXSvaKfvKk2gEuZLrwBYQK5OaSmawzSqjgk9-SEi7-2_IBP3qP4l90yfh49zCfT5_nw-3B8P_x8P_ofXHOd6svuUc5hAcIGjiCOCA3kq2Obxz0sXiECD7tyGJB45WGP7eQ6kgo-2zAfuyJOwcA6n_sXCnYXRBrRwGvCsLvFv7Dbsqxu23IGjmk6nZ5t2n3LwBsZt-1u2-45jj1wela_Z9o7A__mXHKY7UHfdD51zU7X6ncGds_AEFB58Af9LFKvI7XHD7U-F7L7A0ZoLxc)
-
-```
-sequenceDiagram
     kafka ->>+payment-service:consume(orderProcessingEvent)
-    payment-service->>payment-service:validateEvent(orderProcessingEvent)
     payment-service->>payment-service:calculateOrder()
     payment-service->>payment_service_db:savePayment()
     note over payment-service, payment_service_db : save payment, status PAYMENT_PROCESSING
     payment-service->>payment_service_db:savePaymentStatusHistory()
     note over payment-service, payment_service_db : save payment_status_history, status PAYMENT_PROCESSING
     payment-service->>-kafka: send(orderPaymentProcessingEvent)
-
-
+    kafka ->>order-service:consume(orderPaymentProcessingEvent)
+    activate order-service
+    order-service->>+order_service_db:updateOrder()
+    note over order-service, order_service_db : update t_order, status PAYMENT_PROCESSING
+    order-service->>order_service_db: saveOrderStatusHistory()
+    note over order-service, order_service_db : save order_status_history, status PAYMENT_PROCESSING
+    deactivate order-service
 ```
 
-[![](https://mermaid.ink/img/pako:eNqtk8FOg0AQhl-FzEkjbYBSaPfQxGijHtoS8aIhIStMW1LYrbsLEZu-uwu0FzyYVOe0mZ3_2z87MwdIeIpAQOJHiSzB-4xuBC0iZujY0fWOGoPZ7GZP6wKZGkgUVZYgSTiTZYFXXKQoAsETlDJjm3mli647cU-iKX1IRfMspQpb1d9QCc2TMtesVUO5-k0XnzJx-k4krTDo0mcd4woNXqHoE0zjJ8AgRoM435iGVFSV0ghuXxfz5UscPK_u5mH4tHy4zFTY4h4zqbio_8Nh3BmMtx3yAsODdjA0FVl66ltX028fmFCgKGiW6hE7NLgI1BYLjIDoY0rFLoKIHXUdLRUPa5YAUaJEE8p9MxqncQSyprnU2T1lQA7wCWQ6Htoj23LHjmtPrKnnmVADsZ2h4_ve1LYt33Ndxx8dTfjiXBOs4bSL8cS1bN_WAkwz_QOLbgPaRWhfeGvrGxvHbyBgFnU?type=png)](https://mermaid.live/edit#pako:eNqtk8FOg0AQhl-FzEkjbYBSaPfQxGijHtoS8aIhIStMW1LYrbsLEZu-uwu0FzyYVOe0mZ3_2z87MwdIeIpAQOJHiSzB-4xuBC0iZujY0fWOGoPZ7GZP6wKZGkgUVZYgSTiTZYFXXKQoAsETlDJjm3mli647cU-iKX1IRfMspQpb1d9QCc2TMtesVUO5-k0XnzJx-k4krTDo0mcd4woNXqHoE0zjJ8AgRoM435iGVFSV0ghuXxfz5UscPK_u5mH4tHy4zFTY4h4zqbio_8Nh3BmMtx3yAsODdjA0FVl66ltX028fmFCgKGiW6hE7NLgI1BYLjIDoY0rFLoKIHXUdLRUPa5YAUaJEE8p9MxqncQSyprnU2T1lQA7wCWQ6Htoj23LHjmtPrKnnmVADsZ2h4_ve1LYt33Ndxx8dTfjiXBOs4bSL8cS1bN_WAkwz_QOLbgPaRWhfeGvrGxvHbyBgFnU)
-
+[![](https://mermaid.ink/img/pako:eNp9kc1OwzAQhF-l2hOIJLITO8E-9MQVcegNRaqMvZSIxi6OgyhR3h0n4a8VYk-r0Xw7a-8A2hkECR2-9Gg13jRq51Vb21UsvW_QhnS9vnLeoE879K-NRrnaYbiblE1Qoe8uLhf7iemb2n4KW_Mg_-F-2dLIpmeJ7gf7K2wilm1PrJBAi75VjYlPHCawhvCELdYgY2uUf66htmP0qT64zdFqkMH3mEB_MCp8fQfIR7XvonpQFuQAbyAFz2hBCeM5o9dElGUCR5A0z_KqKgWlpCoZy6tiTODduTiBZGIpRgrBC87zBNA0wfnb5QTzJeaI-xmY9hg_AKxjiFc?type=png)](https://mermaid.live/edit#pako:eNp9kc1OwzAQhF-l2hOIJLITO8E-9MQVcegNRaqMvZSIxi6OgyhR3h0n4a8VYk-r0Xw7a-8A2hkECR2-9Gg13jRq51Vb21UsvW_QhnS9vnLeoE879K-NRrnaYbiblE1Qoe8uLhf7iemb2n4KW_Mg_-F-2dLIpmeJ7gf7K2wilm1PrJBAi75VjYlPHCawhvCELdYgY2uUf66htmP0qT64zdFqkMH3mEB_MCp8fQfIR7XvonpQFuQAbyAFz2hBCeM5o9dElGUCR5A0z_KqKgWlpCoZy6tiTODduTiBZGIpRgrBC87zBNA0wfnb5QTzJeaI-xmY9hg_AKxjiFc)
 ```
 sequenceDiagram
     client->>+order-service: getOrderStatus()
@@ -173,4 +167,3 @@ sequenceDiagram
     order-service-->>-client: orderStatus
 ```
 
-[![](https://mermaid.ink/img/pako:eNp9kc1OwzAQhF-l2hOIJLITO8E-9MQVcegNRaqMvZSIxi6OgyhR3h0n4a8VYk-r0Xw7a-8A2hkECR2-9Gg13jRq51Vb21UsvW_QhnS9vnLeoE879K-NRrnaYbiblE1Qoe8uLhf7iemb2n4KW_Mg_-F-2dLIpmeJ7gf7K2wilm1PrJBAi75VjYlPHCawhvCELdYgY2uUf66htmP0qT64zdFqkMH3mEB_MCp8fQfIR7XvonpQFuQAbyAFz2hBCeM5o9dElGUCR5A0z_KqKgWlpCoZy6tiTODduTiBZGIpRgrBC87zBNA0wfnb5QTzJeaI-xmY9hg_AKxjiFc?type=png)](https://mermaid.live/edit#pako:eNp9kc1OwzAQhF-l2hOIJLITO8E-9MQVcegNRaqMvZSIxi6OgyhR3h0n4a8VYk-r0Xw7a-8A2hkECR2-9Gg13jRq51Vb21UsvW_QhnS9vnLeoE879K-NRrnaYbiblE1Qoe8uLhf7iemb2n4KW_Mg_-F-2dLIpmeJ7gf7K2wilm1PrJBAi75VjYlPHCawhvCELdYgY2uUf66htmP0qT64zdFqkMH3mEB_MCp8fQfIR7XvonpQFuQAbyAFz2hBCeM5o9dElGUCR5A0z_KqKgWlpCoZy6tiTODduTiBZGIpRgrBC87zBNA0wfnb5QTzJeaI-xmY9hg_AKxjiFc)

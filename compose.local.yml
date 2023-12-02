@@ -14,7 +14,7 @@ services:
     volumes:
       - postgres-order-data:/var/lib/postgresql/data
     networks:
-      - my-network
+      - internal-network
     restart: always
 
   postgres-payment:
@@ -31,7 +31,7 @@ services:
     volumes:
       - postgres-payment-data:/var/lib/postgresql/data
     networks:
-      - my-network
+      - internal-network
     restart: always
 
   postgres-product:
@@ -48,7 +48,7 @@ services:
     volumes:
       - postgres-product-data:/var/lib/postgresql/data
     networks:
-      - my-network
+      - internal-network
     restart: always
 
   postgres-inventory:
@@ -63,7 +63,7 @@ services:
     volumes:
       - postgres-inventory-data:/var/lib/postgresql/data
     networks:
-      - my-network
+      - internal-network
     restart: always
 
   zipkin:
@@ -72,7 +72,7 @@ services:
     ports:
       - "9411:9411"
     networks:
-      - my-network
+      - internal-network
 
   #  keycloak:
   #    image: quay.io/keycloak/keycloak:22.0.1
@@ -92,34 +92,70 @@ services:
     ports:
       - "2181:2181"
     networks:
-      - my-network
+      - internal-network
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
 
-  broker:
+  kafka:
     image: confluentinc/cp-kafka:7.0.1
-    container_name: broker
+    container_name: kafka
     ports:
       - "9092:9092"
     networks:
-      - my-network
+      - internal-network
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
     depends_on:
       - zookeeper
 
+#  activemq:
+#    image: apache/activemq-artemis:2.31.2-alpine
+#    ports:
+#      - "8161:8161"
+#      - "61616:61616"
+#      - "5672:5672"
+#    networks:
+#      - internal-network
+#    environment:
+#      ARTEMIS_USER: myuser
+#      ARTEMIS_PASSWORD: mypassword
+#    volumes:
+#      - activemq-data:/var/lib/activemq/data
+
+  activemq:
+    image: symptoma/activemq:5.15.13
+    container_name: activemq
+    ports:
+      - "8161:8161" # Web Console
+      - "61616:61616" # OpenWire
+      - "5672:5672" # AMQP
+      - "61613:61613" # STOMP
+      - "1883:1883"   # MQTT
+    networks:
+      - internal-network
+    environment:
+      ACTIVEMQ_USERNAME: system
+      ACTIVEMQ_PASSWORD: manager
+      ACTIVEMQ_WEBADMIN_USERNAME: admin
+      ACTIVEMQ_WEBADMIN_PASSWORD: admin
+    volumes:
+      - activemq-data:/data/activemq
+      - activemq-log:/var/log/activemq
+
 networks:
-  my-network:
+  internal-network:
 
 volumes:
   postgres-product-data:
   postgres-order-data:
   postgres-payment-data:
   postgres-inventory-data:
+  activemq-data:
+  activemq-log:
