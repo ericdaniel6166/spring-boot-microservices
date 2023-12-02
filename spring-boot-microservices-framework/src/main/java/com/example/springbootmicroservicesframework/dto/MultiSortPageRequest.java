@@ -14,8 +14,8 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MultiSortPageRequest {
 
-    @Min(value = Const.ONE)
-    Integer pageNumber = Const.ONE;
+    @Min(value = Const.DEFAULT_PAGE_NUMBER)
+    Integer pageNumber = Const.DEFAULT_PAGE_NUMBER;
 
     @Min(value = Const.DEFAULT_PAGE_SIZE)
     @Max(value = Const.MAXIMUM_PAGE_SIZE)
