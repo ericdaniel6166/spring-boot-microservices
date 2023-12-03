@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 public final class Const {
 
     public static final String REQUEST_PARAM_LANGUAGE = "lang";
+    public static final String REGEX_EMAIL = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
     public static final int MAXIMUM_PAGE_SIZE = 200;
     public static final int MAXIMUM_CREATE_UPDATE_MULTI_ITEM = 10;
     public static final int MAXIMUM_BIG_DECIMAL_INTEGER = 19;

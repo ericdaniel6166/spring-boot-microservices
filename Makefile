@@ -1,6 +1,6 @@
 .PHONY: remove_images docker-down docker-compose-down docker-up maven-install maven-package maven-clean local-up local-down
 
-IMAGE_PATTERNS = order-service payment-service inventory-service product-service notification-service api-gateway discovery-server
+IMAGE_PATTERNS = user-service order-service payment-service inventory-service product-service notification-service api-gateway discovery-server
 
 up: maven-install docker-up
 
@@ -45,6 +45,8 @@ maven-install:
 	cd ../product-service; \
 	./mvnw clean install -Dmaven.test.skip
 	cd ../payment-service; \
+	./mvnw clean install -Dmaven.test.skip
+	cd ../user-service; \
 	./mvnw clean install -Dmaven.test.skip
 
 
