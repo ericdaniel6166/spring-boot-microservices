@@ -1,4 +1,4 @@
-package com.example.springbootmicroservicesframework.kafka.event;
+package com.example.springbootmicroservicesframework.integration.kafka.event;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

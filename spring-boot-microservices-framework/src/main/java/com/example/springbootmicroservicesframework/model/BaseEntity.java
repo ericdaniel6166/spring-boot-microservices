@@ -22,18 +22,18 @@ import java.time.LocalDateTime;
 public abstract class BaseEntity<U> {
 
     @CreatedBy
-    @Column(name = "created_by")
+    @Column(name = "CREATED_BY")
     protected U createdBy;
 
     @CreatedDate
-    @Column(name = "created_date")
+    @Column(name = "CREATED_DATE")
     protected LocalDateTime createdDate;
 
     @LastModifiedBy
-    @Column(name = "last_modified_by")
+    @Column(name = "LAST_MODIFIED_BY")
     protected U lastModifiedBy;
 
     @LastModifiedDate
-    @Column(name = "last_modified_date")
+    @Column(name = "LAST_MODIFIED_DATE")
     protected LocalDateTime lastModifiedDate;
 }

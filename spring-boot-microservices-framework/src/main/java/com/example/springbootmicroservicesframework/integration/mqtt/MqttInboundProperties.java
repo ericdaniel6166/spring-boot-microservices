@@ -1,4 +1,4 @@
-package com.example.springbootmicroservicesframework.mqtt;
+package com.example.springbootmicroservicesframework.integration.mqtt;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -12,10 +12,12 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Data
 @Configuration
-@ConditionalOnProperty(name = "spring.mqtt.outbound.enabled", havingValue = "true")
-@ConfigurationProperties(prefix = "spring.mqtt.outbound")
-public class MqttOutboundProperties {
-    String username;
-    String password;
-    List<String> serverURIs;
+@ConditionalOnProperty(name = "spring.mqtt.inbound.enabled", havingValue = "true")
+@ConfigurationProperties(prefix = "spring.mqtt.inbound")
+public class MqttInboundProperties {
+    String url;
+    List<String> topics;
+    Long completionTimeout;
+    Integer qos;
+
 }

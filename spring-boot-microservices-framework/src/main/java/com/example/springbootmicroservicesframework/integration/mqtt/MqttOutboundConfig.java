@@ -1,4 +1,4 @@
-package com.example.springbootmicroservicesframework.mqtt;
+package com.example.springbootmicroservicesframework.integration.mqtt;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

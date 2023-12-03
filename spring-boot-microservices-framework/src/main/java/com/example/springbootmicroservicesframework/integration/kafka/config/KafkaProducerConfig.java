@@ -1,4 +1,4 @@
-package com.example.springbootmicroservicesframework.kafka.config;
+package com.example.springbootmicroservicesframework.integration.kafka.config;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
