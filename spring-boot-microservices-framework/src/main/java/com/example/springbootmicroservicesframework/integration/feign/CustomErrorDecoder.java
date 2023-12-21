@@ -1,4 +1,4 @@
-package com.example.springbootmicroservicesframework.config.feign;
+package com.example.springbootmicroservicesframework.integration.feign;
 
 import com.example.springbootmicroservicesframework.exception.AppException;
 import com.example.springbootmicroservicesframework.exception.BadRequestException;

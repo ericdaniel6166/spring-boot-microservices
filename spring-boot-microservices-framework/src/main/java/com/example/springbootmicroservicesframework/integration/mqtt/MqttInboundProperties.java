@@ -7,8 +7,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
-
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Data
 @Configuration
@@ -16,7 +14,7 @@ import java.util.List;
 @ConfigurationProperties(prefix = "spring.mqtt.inbound")
 public class MqttInboundProperties {
     String url;
-    List<String> topics;
+    String[] topics;
     Long completionTimeout;
     Integer qos;
 

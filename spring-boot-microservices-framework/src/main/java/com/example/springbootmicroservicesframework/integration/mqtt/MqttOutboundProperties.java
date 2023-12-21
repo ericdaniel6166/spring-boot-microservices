@@ -7,8 +7,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
-
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Data
 @Configuration
@@ -17,5 +15,5 @@ import java.util.List;
 public class MqttOutboundProperties {
     String username;
     String password;
-    List<String> serverURIs;
+    String[] serverURIs;
 }

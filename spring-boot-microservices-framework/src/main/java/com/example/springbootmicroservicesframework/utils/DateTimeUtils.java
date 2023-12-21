@@ -1,8 +1,10 @@
 package com.example.springbootmicroservicesframework.utils;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Date;
 
 public final class DateTimeUtils {
 
@@ -18,5 +20,11 @@ public final class DateTimeUtils {
             return null;
         }
         return result;
+    }
+
+    public static LocalDateTime toLocalDateTime(Date dateToConvert) {
+        return dateToConvert.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
     }
 }

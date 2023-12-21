@@ -1,4 +1,4 @@
-package com.example.springbootmicroservicesframework.config.feign;
+package com.example.springbootmicroservicesframework.integration.feign;
 
 import feign.Logger;
 import feign.RequestInterceptor;
@@ -32,11 +32,7 @@ public class FeignClientConfig {
     // improvement later
     @Bean
     public RequestInterceptor requestInterceptor() {
-        return requestTemplate -> {
-//            requestTemplate.header("user", "ajeje");
-//            requestTemplate.header("password", "brazof");
-            requestTemplate.header("Accept", ContentType.APPLICATION_JSON.getMimeType());
-        };
+        return requestTemplate -> requestTemplate.header("Accept", ContentType.APPLICATION_JSON.getMimeType());
     }
 
     // @Bean - uncomment to use this interceptor and remove @Bean from the requestInterceptor()

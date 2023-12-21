@@ -27,6 +27,7 @@ helping troubleshoot issues in distributed architectures
 - Maven
 - Docker
 - GNU Make
+- WSL (if using Windows)
 
 ## Setup
 
@@ -36,6 +37,7 @@ helping troubleshoot issues in distributed architectures
           inventory-service, etc)
     - discovery-server : https://github.com/ericdaniel6166/discovery-server
     - api-gateway : https://github.com/ericdaniel6166/api-gateway
+    - user-service : https://github.com/ericdaniel6166/user-service
     - product-service : https://github.com/ericdaniel6166/product-service
     - order-service : https://github.com/ericdaniel6166/order-service
     - inventory-service : https://github.com/ericdaniel6166/inventory-service
@@ -49,6 +51,7 @@ helping troubleshoot issues in distributed architectures
 ├── spring-boot-microservices
 ├── discovery-server
 ├── api-gateway
+├── user-service
 ├── product-service
 ├── order-service
 ├── payment-service
@@ -89,13 +92,19 @@ make local-down
 http://localhost:8181/swagger-ui.html
 ![img.png](img.png)
 ![img_1.png](img_1.png)
-##### Swagger
-
-
-
+##### Zipkin
+http://localhost:9411/
+![img_3.png](img_3.png)
+##### ActiveMQ
+http://localhost:8161/
+admin-admin
+![img_4.png](img_4.png)
+##### Apache Kafka
+- Using [Offset Explorer](https://www.kafkatool.com) - a GUI application for managing and using Apache Kafka clusters
+![img_2.png](img_2.png)
 ## Sequence diagrams (Updating...)
 
-- Using mermaid.live
+- Using [mermaid.live](https://mermaid.live/)
   [![](https://mermaid.ink/img/pako:eNrVV11v2jAU_SuWn4oaKsI3eajEVrQhtVAVNGkTUuQmlzYisVniRKNV__ucOHzkw0DQHrq-NFz7nHvse66dvGOL2YANHMDvEKgFdw558Ym3oEj8Wa4DlNdvb6-Zb4NfD8CPHAsMtHaJBVdJ8CkGBrwmEZl5ApjDRcR1bMIhBZ3NYKa_TfvZQAGJYBpHr2pIYijjgFgEfhatoTwYSTTiZjKioYATHgbocTS5G0--LWhlDbOE4LsTcOZvrmoX6knjCZf5KsmK4gRzub4VWa6IoAJqyy19FE8OfRlFonyl-ypAdVldQ47IdZyQX4LIqEvlOTTOK5ZQlGgxGoQeKFUSizuRMEiR41SC610wU6gX4OPtwJguWbFEBTINKanQ0mfeflhDa5_ZocVzsg5gyU4XUhj7ubGore_K1lWC3XbRmIM3jIjjkmcX4oWle-hy5ARyloycKMqBb3xmQRDkiqK2XLacSvCuqhkWNfl1oeHCdbzgtOv3wCqNJimKrf80_TqazXYW3rvsPGXHT4JKIo0zzoKjam1Q7bScA24AsTWEoovsERtuwvjOc_k6H-RX9O-ZVjqV6DMbajwfPZiT6dwc_hiO74df7kf_g7HOU602WGIvaqPtMS3_r8nGi98g0mmoysGxy5QjKWUWxLmIYRHXCt18kZW4_HY9ynDxvsgxaKhIsL3W05F99w5_PowmczPfxVVFnXjpqK5QedycLbh4lcgp5bU98FFpdTPmUrnmWIJjNr3ocPgXN41iMz_Z26ZCpar1sYY98D3i2OIr4j2eu8D8FTxYYEM82sRfLfCCfoh5JORstqEWNpZE3EQalhuVfnLsomtCsfGO_2CjrjcaN_2u3tGb7Va3rfcaXQ1v4ni3dzNo9Dvdfr_VHDSbrdaHht8YEyT6Ta-nd7p6uzVottpt8aBhsB2xxgf5pZN88CRZfiUA7ofw8Rer1Iu2?type=png)](https://mermaid.live/edit#pako:eNrVV11v2jAU_SuWn4oaKsI3eajEVrQhtVAVNGkTUuQmlzYisVniRKNV__ucOHzkw0DQHrq-NFz7nHvse66dvGOL2YANHMDvEKgFdw558Ym3oEj8Wa4DlNdvb6-Zb4NfD8CPHAsMtHaJBVdJ8CkGBrwmEZl5ApjDRcR1bMIhBZ3NYKa_TfvZQAGJYBpHr2pIYijjgFgEfhatoTwYSTTiZjKioYATHgbocTS5G0--LWhlDbOE4LsTcOZvrmoX6knjCZf5KsmK4gRzub4VWa6IoAJqyy19FE8OfRlFonyl-ypAdVldQ47IdZyQX4LIqEvlOTTOK5ZQlGgxGoQeKFUSizuRMEiR41SC610wU6gX4OPtwJguWbFEBTINKanQ0mfeflhDa5_ZocVzsg5gyU4XUhj7ubGore_K1lWC3XbRmIM3jIjjkmcX4oWle-hy5ARyloycKMqBb3xmQRDkiqK2XLacSvCuqhkWNfl1oeHCdbzgtOv3wCqNJimKrf80_TqazXYW3rvsPGXHT4JKIo0zzoKjam1Q7bScA24AsTWEoovsERtuwvjOc_k6H-RX9O-ZVjqV6DMbajwfPZiT6dwc_hiO74df7kf_g7HOU602WGIvaqPtMS3_r8nGi98g0mmoysGxy5QjKWUWxLmIYRHXCt18kZW4_HY9ynDxvsgxaKhIsL3W05F99w5_PowmczPfxVVFnXjpqK5QedycLbh4lcgp5bU98FFpdTPmUrnmWIJjNr3ocPgXN41iMz_Z26ZCpar1sYY98D3i2OIr4j2eu8D8FTxYYEM82sRfLfCCfoh5JORstqEWNpZE3EQalhuVfnLsomtCsfGO_2CjrjcaN_2u3tGb7Va3rfcaXQ1v4ni3dzNo9Dvdfr_VHDSbrdaHht8YEyT6Ta-nd7p6uzVottpt8aBhsB2xxgf5pZN88CRZfiUA7ofw8Rer1Iu2)
 
 ```

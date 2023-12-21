@@ -20,6 +20,8 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -61,6 +63,30 @@ public class RestExceptionHandler {
         return buildResponseExceptionEntity(errorResponse);
     }
 
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<Object> handleValidationException(ValidationException e, HttpServletRequest httpServletRequest) {
+        String errorMessage = getRootCauseMessage(e);
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, e.getError(),
+                errorMessage, httpServletRequest, e.getErrorDetails());
+        return buildResponseExceptionEntity(errorResponse);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException e, HttpServletRequest httpServletRequest) {
+        String errorMessage = getRootCauseMessage(e);
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED, HttpStatus.UNAUTHORIZED.name(),
+                errorMessage, httpServletRequest, null);
+        return buildResponseExceptionEntity(errorResponse);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException e, HttpServletRequest httpServletRequest) {
+        String errorMessage = getRootCauseMessage(e);
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.FORBIDDEN, HttpStatus.FORBIDDEN.name(),
+                errorMessage, httpServletRequest, null);
+        return buildResponseExceptionEntity(errorResponse);
+    }
+
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e, HttpServletRequest httpServletRequest, HandlerMethod handlerMethod) {
         log.info("handleConstraintViolationException");
@@ -78,12 +104,15 @@ public class RestExceptionHandler {
         String propertyPath = constraintViolation.getPropertyPath().toString();
         String keyClass = String.format(KEY_TEMPLATE, apiClassName, propertyPath);
         String[] parts = propertyPath.split("\\.");
-        Assert.isTrue(parts.length > 1, "parts length must be greater than 1");
+        Assert.isTrue(parts.length > 0, "parts length must be greater than 0");
         String field = parts[parts.length - 1];
         String keyField = String.format(KEY_TEMPLATE, Const.COMMON, field);
         String model = getModel(keyClass, keyField);
-        MessageFormat messageFormat = new MessageFormat(constraintViolation.getMessage());
-        String msg = messageFormat.format(new Object[]{model});
+        String msg = constraintViolation.getMessage();
+        if (constraintViolation.getMessage().contains(Const.PLACEHOLDER_0)) {
+            MessageFormat messageFormat = new MessageFormat(constraintViolation.getMessage());
+            msg = messageFormat.format(new Object[]{model});
+        }
         return new ValidationErrorDetail(keyClass, field,
                 constraintViolation.getInvalidValue(), StringUtils.capitalize(msg));
     }
@@ -93,19 +122,24 @@ public class RestExceptionHandler {
         String keyField = String.format(KEY_TEMPLATE, Const.COMMON, fieldError.getField());
         String model = getModel(keyClass, keyField);
         String messageTemplate = null;
-        for (String errorCode : fieldError.getCodes()) {
-            try {
-                messageTemplate = messageSource.getMessage(errorCode, null, LocaleContextHolder.getLocale());
-                break;
-            } catch (NoSuchMessageException ignored) {
+        if (ObjectUtils.isNotEmpty(fieldError.getCodes())) {
+            for (String errorCode : fieldError.getCodes()) {
+                try {
+                    messageTemplate = messageSource.getMessage(errorCode, null, LocaleContextHolder.getLocale());
+                    break;
+                } catch (NoSuchMessageException ignored) {
+                }
             }
         }
         if (StringUtils.isBlank(messageTemplate)) {
             messageTemplate = fieldError.getDefaultMessage();
         }
-
-        MessageFormat messageFormat = new MessageFormat(messageTemplate);
-        String msg = messageFormat.format(new Object[]{model});
+        Assert.isTrue(messageTemplate != null, "messageTemplate is not null");
+        String msg = messageTemplate;
+        if (messageTemplate.contains(Const.PLACEHOLDER_0)) {
+            MessageFormat messageFormat = new MessageFormat(messageTemplate);
+            msg = messageFormat.format(new Object[]{model});
+        }
         return new ValidationErrorDetail(keyClass, fieldError.getField(),
                 fieldError.getRejectedValue(), StringUtils.capitalize(msg));
     }
@@ -115,7 +149,9 @@ public class RestExceptionHandler {
         String keyClass = String.format(KEY_CLASS_TEMPLATE, apiClassName, methodName, parameterName);
         String keyField = String.format(KEY_TEMPLATE, Const.COMMON, parameterName);
         String model = getModel(keyClass, keyField);
-        String errorCode = String.format(KEY_TEMPLATE, e.getErrorCode(), e.getRequiredType().getName());
+        Class<?> requiredType = e.getRequiredType();
+        Assert.isTrue( requiredType != null, "requiredType is not null");
+        String errorCode = String.format(KEY_TEMPLATE, e.getErrorCode(), requiredType.getName());
         String message = getErrormessage(model, errorCode, e.getMessage());
         return new ValidationErrorDetail(keyClass, parameterName,
                 e.getValue(), StringUtils.capitalize(message));

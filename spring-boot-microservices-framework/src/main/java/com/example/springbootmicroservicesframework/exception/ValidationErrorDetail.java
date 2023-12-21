@@ -22,5 +22,8 @@ public class ValidationErrorDetail extends ErrorDetail {
 
     private String message;
 
-
+    public ValidationErrorDetail(String field, String message) {
+        this.field = field;
+        this.message = message;
+    }
 }
