@@ -29,7 +29,7 @@ public class MqttOutboundConfig {
     public MqttPahoClientFactory mqttClientFactory() {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         MqttConnectOptions options = new MqttConnectOptions();
-        options.setServerURIs(mqttOutboundProperties.getServerURIs().toArray(new String[0]));
+        options.setServerURIs(mqttOutboundProperties.getServerURIs());
         options.setUserName(mqttOutboundProperties.getUsername());
         options.setPassword(mqttOutboundProperties.getPassword().toCharArray());
         factory.setConnectionOptions(options);

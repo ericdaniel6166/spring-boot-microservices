@@ -27,6 +27,7 @@ helping troubleshoot issues in distributed architectures
 - Maven
 - Docker
 - GNU Make
+- WSL (if using Windows)
 
 ## Setup
 
@@ -90,8 +91,6 @@ http://localhost:8181/swagger-ui.html
 ![img.png](img.png)
 ![img_1.png](img_1.png)
 ##### Swagger
-
-
 
 ## Sequence diagrams (Updating...)
 

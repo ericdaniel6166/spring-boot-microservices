@@ -32,7 +32,7 @@ public class MqttInboundConfig {
     public MessageProducer inbound() {
         MqttPahoMessageDrivenChannelAdapter adapter =
                 new MqttPahoMessageDrivenChannelAdapter(mqttInboundProperties.getUrl(), CLIENT_ID,
-                        mqttInboundProperties.getTopics().toArray(new String[0]));
+                        mqttInboundProperties.getTopics());
         adapter.setCompletionTimeout(mqttInboundProperties.getCompletionTimeout());
         adapter.setConverter(new DefaultPahoMessageConverter());
         adapter.setQos(mqttInboundProperties.getQos());
