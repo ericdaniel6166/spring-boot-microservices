@@ -39,16 +39,16 @@ import java.util.List;
 
 @RestControllerAdvice
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class RestExceptionHandler {
 
-    static final String KEY_TEMPLATE = "%s.%s";
-    static final String KEY_CLASS_TEMPLATE = "%s.%s.%s";
+    private static final String KEY_TEMPLATE = "%s.%s";
+    private static final String KEY_CLASS_TEMPLATE = "%s.%s.%s";
 
 
-    final MessageSource messageSource;
-    final TraceIdContext traceIdContext;
+    MessageSource messageSource;
+    TraceIdContext traceIdContext;
 
     private static String getRootCauseMessage(Exception e) {
         return ExceptionUtils.getRootCause(e).getMessage();
@@ -89,7 +89,6 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e, HttpServletRequest httpServletRequest, HandlerMethod handlerMethod) {
-        log.info("handleConstraintViolationException");
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
                 ErrorCode.VALIDATION_ERROR.name(), null, httpServletRequest, null);
         List<ErrorDetail> errorDetails = e.getConstraintViolations().stream()
@@ -185,7 +184,6 @@ public class RestExceptionHandler {
     public ResponseEntity<Object> handleBindException(BindException e, HttpServletRequest httpServletRequest, HandlerMethod handlerMethod) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
                 ErrorCode.VALIDATION_ERROR.name(), null, httpServletRequest, null);
-        log.info("handleBindException");
         List<ErrorDetail> errorDetails = e.getBindingResult().getAllErrors().stream()
                 .filter(FieldError.class::isInstance)
                 .map(error -> mapToErrorDetail((FieldError) error, handlerMethod.getBeanType().getSimpleName()))
@@ -199,7 +197,6 @@ public class RestExceptionHandler {
     public ResponseEntity<Object> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e, HttpServletRequest httpServletRequest, HandlerMethod handlerMethod) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
                 ErrorCode.VALIDATION_ERROR.name(), null, httpServletRequest, null);
-        log.info("handleMethodArgumentTypeMismatchException");
         List<ErrorDetail> errorDetails = Collections.singletonList(mapToErrorDetail(
                 handlerMethod.getBeanType().getSimpleName(), e, handlerMethod.getMethod().getName()));
         errorResponse.setErrorDetails(errorDetails);
@@ -210,7 +207,6 @@ public class RestExceptionHandler {
     public ResponseEntity<Object> handleMissingServletRequestParameterException(MissingServletRequestParameterException e, HttpServletRequest httpServletRequest, HandlerMethod handlerMethod) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
                 ErrorCode.VALIDATION_ERROR.name(), null, httpServletRequest, null);
-        log.info("handleMissingServletRequestParameterException");
         List<ErrorDetail> errorDetails = Collections.singletonList(mapMissingServletRequestParameterExceptionToErrorDetail(
                 handlerMethod.getBeanType().getSimpleName(), e, handlerMethod.getMethod().getName()));
         errorResponse.setErrorDetails(errorDetails);

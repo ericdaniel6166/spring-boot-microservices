@@ -12,10 +12,10 @@ import java.util.Objects;
 @Component
 @RequiredArgsConstructor
 @ConditionalOnClass(value = Tracer.class)
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AppTraceIdContext implements TraceIdContext {
 
-    final Tracer tracer;
+    Tracer tracer;
 
     @Override
     public String getTraceId() {

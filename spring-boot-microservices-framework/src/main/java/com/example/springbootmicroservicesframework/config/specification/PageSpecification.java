@@ -33,7 +33,7 @@ public class PageSpecification<T> implements Specification<T> {
             case ASC -> orderList.add(criteriaBuilder.asc(root.get(cursorPageRequest.getSortColumn())));
             case DESC -> orderList.add(criteriaBuilder.desc(root.get(cursorPageRequest.getSortColumn())));
             default -> {
-            } //can't go here because of validation
+            }
         }
         if (!StringUtils.equals(cursorPageRequest.getSortColumn(), Const.ID)) {
             Order defaultOrder = criteriaBuilder.asc(root.get(Const.ID));
@@ -44,17 +44,17 @@ public class PageSpecification<T> implements Specification<T> {
     }
 
     private Predicate applyPaginationFilter(Root<T> root, CriteriaBuilder criteriaBuilder) {
-        String searchValue = cursorPageRequest.getSearchValue();
-        if (StringUtils.isBlank(String.valueOf(searchValue))) {
+        String cursorValue = cursorPageRequest.getCursorValue();
+        if (StringUtils.isBlank(String.valueOf(cursorValue))) {
             return criteriaBuilder.conjunction();
         }
         if (LocalDateTime.class.isAssignableFrom(root.get(cursorPageRequest.getSortColumn()).getJavaType())) {
             return cursorPageRequest.hasPrevPageCursor()
-                    ? criteriaBuilder.lessThan(root.get(cursorPageRequest.getSortColumn()), DateTimeUtils.toLocalDateTime(searchValue, Const.DEFAULT_DATE_TIME_FORMATTER))
-                    : criteriaBuilder.greaterThan(root.get(cursorPageRequest.getSortColumn()), DateTimeUtils.toLocalDateTime(searchValue, Const.DEFAULT_DATE_TIME_FORMATTER));
+                    ? criteriaBuilder.lessThan(root.get(cursorPageRequest.getSortColumn()), DateTimeUtils.toLocalDateTime(cursorValue, Const.DEFAULT_DATE_TIME_FORMATTER))
+                    : criteriaBuilder.greaterThan(root.get(cursorPageRequest.getSortColumn()), DateTimeUtils.toLocalDateTime(cursorValue, Const.DEFAULT_DATE_TIME_FORMATTER));
         }
         return cursorPageRequest.hasPrevPageCursor()
-                ? criteriaBuilder.lessThan(root.get(cursorPageRequest.getSortColumn()), searchValue)
-                : criteriaBuilder.greaterThan(root.get(cursorPageRequest.getSortColumn()), searchValue);
+                ? criteriaBuilder.lessThan(root.get(cursorPageRequest.getSortColumn()), cursorValue)
+                : criteriaBuilder.greaterThan(root.get(cursorPageRequest.getSortColumn()), cursorValue);
     }
 }

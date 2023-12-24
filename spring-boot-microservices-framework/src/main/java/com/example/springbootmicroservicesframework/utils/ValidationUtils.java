@@ -12,10 +12,10 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Component
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ValidationUtils {
 
-    final MessageUtils messageUtils;
+    MessageUtils messageUtils;
 
     public boolean handleConstrainsValidValue(ConstraintValidatorContext constraintValidatorContext, boolean isValid, String message, String[] messageParams, String messageCode, List<String> valueList) {
         if (!isValid && StringUtils.isBlank(message)) {

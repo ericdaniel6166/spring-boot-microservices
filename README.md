@@ -79,7 +79,7 @@ make down
 # Docker compose up
 make local-up
 
-# Start discovery-server, api-gateway 
+# Start discovery-server, api-gateway, user-service
 
 # Start microservice   
 

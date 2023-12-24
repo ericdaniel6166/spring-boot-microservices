@@ -40,7 +40,7 @@ public class CursorPageRequest {
         return hasPrevPageCursor() || hasNextPageCursor();
     }
 
-    public String getSearchValue() {
+    public String getCursorValue() {
         if (!hasCursors()) return StringUtils.EMPTY;
 
         return hasPrevPageCursor()

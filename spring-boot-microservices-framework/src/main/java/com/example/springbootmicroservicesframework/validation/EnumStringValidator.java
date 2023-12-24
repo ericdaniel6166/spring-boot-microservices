@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 public class EnumStringValidator implements ConstraintValidator<ValidEnumString, String> {
 
     final ValidationUtils validationUtils;
+
     List<String> valueList;
     boolean caseSensitive;
     boolean checkNotBlank;

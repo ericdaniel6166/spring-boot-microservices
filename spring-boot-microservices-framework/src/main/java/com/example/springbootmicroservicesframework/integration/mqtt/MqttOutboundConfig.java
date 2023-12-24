@@ -16,14 +16,14 @@ import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @Configuration
 @ConditionalOnProperty(name = "spring.mqtt.outbound.enabled", havingValue = "true")
 public class MqttOutboundConfig {
     public static final String CLIENT_ID = MqttAsyncClient.generateClientId();
 
-    final MqttOutboundProperties mqttOutboundProperties;
+    MqttOutboundProperties mqttOutboundProperties;
 
     @Bean
     public MqttPahoClientFactory mqttClientFactory() {

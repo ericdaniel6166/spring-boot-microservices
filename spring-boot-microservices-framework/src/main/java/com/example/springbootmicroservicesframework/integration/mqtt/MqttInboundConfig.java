@@ -13,15 +13,15 @@ import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannel
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
 import org.springframework.messaging.MessageChannel;
 
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @Configuration
 @ConditionalOnProperty(name = "spring.mqtt.inbound.enabled", havingValue = "true")
 public class MqttInboundConfig {
 
-    public static final String CLIENT_ID = MqttAsyncClient.generateClientId();
+    private static final String CLIENT_ID = MqttAsyncClient.generateClientId();
 
-    final MqttInboundProperties mqttInboundProperties;
+    MqttInboundProperties mqttInboundProperties;
 
     @Bean
     public MessageChannel mqttInputChannel() {
@@ -30,9 +30,8 @@ public class MqttInboundConfig {
 
     @Bean
     public MessageProducer inbound() {
-        MqttPahoMessageDrivenChannelAdapter adapter =
-                new MqttPahoMessageDrivenChannelAdapter(mqttInboundProperties.getUrl(), CLIENT_ID,
-                        mqttInboundProperties.getTopics());
+        MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter(
+                mqttInboundProperties.getUrl(), CLIENT_ID, mqttInboundProperties.getTopics());
         adapter.setCompletionTimeout(mqttInboundProperties.getCompletionTimeout());
         adapter.setConverter(new DefaultPahoMessageConverter());
         adapter.setQos(mqttInboundProperties.getQos());

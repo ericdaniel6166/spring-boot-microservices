@@ -17,12 +17,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @ConditionalOnProperty(name = "spring.kafka.enabled", havingValue = "true")
 public class KafkaProducerConfig {
 
-    final KafkaProperties kafkaProperties;
+    KafkaProperties kafkaProperties;
 
     @Bean
     public ProducerFactory<String, Object> producerFactory() {

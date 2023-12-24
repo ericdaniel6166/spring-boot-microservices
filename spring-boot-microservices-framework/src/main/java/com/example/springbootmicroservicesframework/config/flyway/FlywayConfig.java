@@ -14,18 +14,16 @@ import javax.sql.DataSource;
 import java.util.Optional;
 
 @Configuration
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @ConditionalOnProperty(name = "spring.flyway.enabled", havingValue = "true")
 public class FlywayConfig {
 
-    static final String SCHEMA_HISTORY = "schema_history";
+    private static final String SCHEMA_HISTORY = "schema_history";
+    private static final String FLYWAY_BASELINE_VERSION_DEFAULT = "0.0";
+    private static final String FLYWAY_LOCATION_DEFAULT = "classpath:db/migration/";
 
-    static final String FLYWAY_BASELINE_VERSION_DEFAULT = "0.0";
-
-    static final String FLYWAY_LOCATION_DEFAULT = "classpath:db/migration/";
-
-    final FlywayProperties flywayProperties;
+    FlywayProperties flywayProperties;
 
     @Bean
     public Flyway flyway(DataSource dataSource) {
@@ -39,7 +37,8 @@ public class FlywayConfig {
                         .orElse(SCHEMA_HISTORY))
                 .locations(Optional.ofNullable(flywayProperties.getLocations())
                         .orElse(FLYWAY_LOCATION_DEFAULT))
-                .validateOnMigrate(flywayProperties.getValidateOnMigrate())
+                .validateOnMigrate(Optional.ofNullable(flywayProperties.getValidateOnMigrate())
+                        .orElse(Boolean.TRUE))
                 .load();
     }
 
