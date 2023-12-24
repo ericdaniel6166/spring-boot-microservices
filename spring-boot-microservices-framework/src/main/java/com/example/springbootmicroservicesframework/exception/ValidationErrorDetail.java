@@ -16,14 +16,16 @@ public class ValidationErrorDetail extends ErrorDetail {
     private String keyClass;
 
     private String field;
+    private String object;
 
     @JsonIgnore
     private Object rejectedValue;
 
     private String message;
 
-    public ValidationErrorDetail(String field, String message) {
+    public ValidationErrorDetail(String field, String object, String message) {
         this.field = field;
         this.message = message;
+        this.object = object;
     }
 }

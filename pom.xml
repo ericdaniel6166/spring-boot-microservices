@@ -32,6 +32,7 @@
         <springdoc-openapi-starter-webmvc-ui.version>2.2.0</springdoc-openapi-starter-webmvc-ui.version>
         <springdoc-openapi-starter-webflux-ui.version>2.2.0</springdoc-openapi-starter-webflux-ui.version>
         <opentelemetry-logback-1.0.version>0.16.1</opentelemetry-logback-1.0.version>
+        <passay.version>1.6.3</passay.version>
     </properties>
 
     <dependencyManagement>
