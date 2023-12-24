@@ -25,6 +25,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -39,16 +40,16 @@ import java.util.List;
 
 @RestControllerAdvice
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class RestExceptionHandler {
 
-    static final String KEY_TEMPLATE = "%s.%s";
-    static final String KEY_CLASS_TEMPLATE = "%s.%s.%s";
+    private static final String KEY_TEMPLATE = "%s.%s";
+    private static final String KEY_CLASS_TEMPLATE = "%s.%s.%s";
 
 
-    final MessageSource messageSource;
-    final TraceIdContext traceIdContext;
+    MessageSource messageSource;
+    TraceIdContext traceIdContext;
 
     private static String getRootCauseMessage(Exception e) {
         return ExceptionUtils.getRootCause(e).getMessage();
@@ -88,19 +89,19 @@ public class RestExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e, HttpServletRequest httpServletRequest, HandlerMethod handlerMethod) {
-        log.info("handleConstraintViolationException");
+    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e, HttpServletRequest httpServletRequest,
+                                                                     HandlerMethod handlerMethod) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
                 ErrorCode.VALIDATION_ERROR.name(), null, httpServletRequest, null);
         List<ErrorDetail> errorDetails = e.getConstraintViolations().stream()
-                .map(constraintViolation -> mapToErrorDetail(constraintViolation, handlerMethod.getBeanType().getSimpleName()))
+                .map(constraintViolation -> mapConstrainViolationToErrorDetail(constraintViolation, handlerMethod.getBeanType().getSimpleName()))
                 .toList();
         errorResponse.setErrorDetails(errorDetails);
 
         return buildResponseExceptionEntity(errorResponse);
     }
 
-    private ErrorDetail mapToErrorDetail(ConstraintViolation<?> constraintViolation, String apiClassName) {
+    private ErrorDetail mapConstrainViolationToErrorDetail(ConstraintViolation<?> constraintViolation, String apiClassName) {
         String propertyPath = constraintViolation.getPropertyPath().toString();
         String keyClass = String.format(KEY_TEMPLATE, apiClassName, propertyPath);
         String[] parts = propertyPath.split("\\.");
@@ -113,11 +114,11 @@ public class RestExceptionHandler {
             MessageFormat messageFormat = new MessageFormat(constraintViolation.getMessage());
             msg = messageFormat.format(new Object[]{model});
         }
-        return new ValidationErrorDetail(keyClass, field,
+        return new ValidationErrorDetail(keyClass, field, null,
                 constraintViolation.getInvalidValue(), StringUtils.capitalize(msg));
     }
 
-    private ErrorDetail mapToErrorDetail(FieldError fieldError, String apiClassName) {
+    private ErrorDetail mapFieldErrorToErrorDetail(FieldError fieldError, String apiClassName) {
         String keyClass = String.format(KEY_CLASS_TEMPLATE, apiClassName, fieldError.getObjectName(), fieldError.getField());
         String keyField = String.format(KEY_TEMPLATE, Const.COMMON, fieldError.getField());
         String model = getModel(keyClass, keyField);
@@ -128,6 +129,7 @@ public class RestExceptionHandler {
                     messageTemplate = messageSource.getMessage(errorCode, null, LocaleContextHolder.getLocale());
                     break;
                 } catch (NoSuchMessageException ignored) {
+                    //
                 }
             }
         }
@@ -140,11 +142,11 @@ public class RestExceptionHandler {
             MessageFormat messageFormat = new MessageFormat(messageTemplate);
             msg = messageFormat.format(new Object[]{model});
         }
-        return new ValidationErrorDetail(keyClass, fieldError.getField(),
+        return new ValidationErrorDetail(keyClass, fieldError.getField(), null,
                 fieldError.getRejectedValue(), StringUtils.capitalize(msg));
     }
 
-    private ErrorDetail mapToErrorDetail(String apiClassName, MethodArgumentTypeMismatchException e, String methodName) {
+    private ErrorDetail mapMethodArgumentTypeMismatchExceptionToErrorDetail(String apiClassName, MethodArgumentTypeMismatchException e, String methodName) {
         String parameterName = e.getParameter().getParameterName();
         String keyClass = String.format(KEY_CLASS_TEMPLATE, apiClassName, methodName, parameterName);
         String keyField = String.format(KEY_TEMPLATE, Const.COMMON, parameterName);
@@ -152,8 +154,8 @@ public class RestExceptionHandler {
         Class<?> requiredType = e.getRequiredType();
         Assert.isTrue( requiredType != null, "requiredType is not null");
         String errorCode = String.format(KEY_TEMPLATE, e.getErrorCode(), requiredType.getName());
-        String message = getErrormessage(model, errorCode, e.getMessage());
-        return new ValidationErrorDetail(keyClass, parameterName,
+        String message = getErrorMessage(model, errorCode, e.getMessage());
+        return new ValidationErrorDetail(keyClass, parameterName, null,
                 e.getValue(), StringUtils.capitalize(message));
     }
 
@@ -162,16 +164,17 @@ public class RestExceptionHandler {
         String keyClass = String.format(KEY_CLASS_TEMPLATE, apiClassName, methodName, parameterName);
         String keyField = String.format(KEY_TEMPLATE, Const.COMMON, parameterName);
         String model = getModel(keyClass, keyField);
-        String message = getErrormessage(model, MessageConstant.MSG_ERR_CONSTRAINS_REQUIRED, e.getMessage());
-        return new ValidationErrorDetail(keyClass, parameterName,
+        String message = getErrorMessage(model, MessageConstant.MSG_ERR_CONSTRAINS_REQUIRED, e.getMessage());
+        return new ValidationErrorDetail(keyClass, parameterName, null,
                 null, StringUtils.capitalize(message));
     }
 
-    private String getErrormessage(String model, String errorCode, String message) {
+    private String getErrorMessage(String model, String errorCode, String message) {
         String messageTemplate = null;
         try {
             messageTemplate = messageSource.getMessage(errorCode, null, LocaleContextHolder.getLocale());
         } catch (NoSuchMessageException ignored) {
+            //
         }
         if (StringUtils.isBlank(messageTemplate)) {
             messageTemplate = message;
@@ -185,22 +188,32 @@ public class RestExceptionHandler {
     public ResponseEntity<Object> handleBindException(BindException e, HttpServletRequest httpServletRequest, HandlerMethod handlerMethod) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
                 ErrorCode.VALIDATION_ERROR.name(), null, httpServletRequest, null);
-        log.info("handleBindException");
         List<ErrorDetail> errorDetails = e.getBindingResult().getAllErrors().stream()
-                .filter(FieldError.class::isInstance)
-                .map(error -> mapToErrorDetail((FieldError) error, handlerMethod.getBeanType().getSimpleName()))
+                .map(error -> mapToErrorDetail(handlerMethod, error))
                 .toList();
         errorResponse.setErrorDetails(errorDetails);
-
         return buildResponseExceptionEntity(errorResponse);
+    }
+
+    private ErrorDetail mapToErrorDetail(HandlerMethod handlerMethod, ObjectError error) {
+        if (error instanceof FieldError fieldError) {
+            return mapFieldErrorToErrorDetail(fieldError, handlerMethod.getBeanType().getSimpleName());
+        }
+        return mapObjectErrorToErrorDetail(error, handlerMethod.getBeanType().getSimpleName(),
+                handlerMethod.getMethod().getName());
+    }
+
+    private ErrorDetail mapObjectErrorToErrorDetail(ObjectError objectError, String apiClassName, String methodName) {
+        String keyClass = String.format(KEY_CLASS_TEMPLATE, apiClassName, methodName, objectError.getObjectName());
+        return new ValidationErrorDetail(keyClass, null, objectError.getObjectName(), null,
+                StringUtils.capitalize(objectError.getDefaultMessage()));
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<Object> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e, HttpServletRequest httpServletRequest, HandlerMethod handlerMethod) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
                 ErrorCode.VALIDATION_ERROR.name(), null, httpServletRequest, null);
-        log.info("handleMethodArgumentTypeMismatchException");
-        List<ErrorDetail> errorDetails = Collections.singletonList(mapToErrorDetail(
+        List<ErrorDetail> errorDetails = Collections.singletonList(mapMethodArgumentTypeMismatchExceptionToErrorDetail(
                 handlerMethod.getBeanType().getSimpleName(), e, handlerMethod.getMethod().getName()));
         errorResponse.setErrorDetails(errorDetails);
         return buildResponseExceptionEntity(errorResponse);
@@ -210,7 +223,6 @@ public class RestExceptionHandler {
     public ResponseEntity<Object> handleMissingServletRequestParameterException(MissingServletRequestParameterException e, HttpServletRequest httpServletRequest, HandlerMethod handlerMethod) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
                 ErrorCode.VALIDATION_ERROR.name(), null, httpServletRequest, null);
-        log.info("handleMissingServletRequestParameterException");
         List<ErrorDetail> errorDetails = Collections.singletonList(mapMissingServletRequestParameterExceptionToErrorDetail(
                 handlerMethod.getBeanType().getSimpleName(), e, handlerMethod.getMethod().getName()));
         errorResponse.setErrorDetails(errorDetails);
@@ -226,6 +238,7 @@ public class RestExceptionHandler {
                 model = messageSource.getMessage(key, null, LocaleContextHolder.getLocale());
                 break;
             } catch (NoSuchMessageException ignored) {
+                //
             }
         }
         if (StringUtils.isBlank(model)) {
@@ -254,8 +267,9 @@ public class RestExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleException(Exception e, HttpServletRequest httpServletRequest) {
         String errorMessage = getRootCauseMessage(e);
+        log.info(errorMessage);
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR.name(),
-                errorMessage, httpServletRequest, null);
+                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), httpServletRequest, null);
         return buildResponseExceptionEntity(errorResponse);
     }
 

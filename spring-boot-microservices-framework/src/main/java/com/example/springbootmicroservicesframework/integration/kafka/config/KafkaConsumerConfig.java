@@ -18,15 +18,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @ConditionalOnProperty(name = "spring.kafka.enabled", havingValue = "true")
 @EnableKafka
 public class KafkaConsumerConfig {
 
-    static final String TRUST_ALL_PACKAGES = "*";
+    private static final String TRUST_ALL_PACKAGES = "*";
 
-    final KafkaProperties kafkaProperties;
+    KafkaProperties kafkaProperties;
 
     public ConsumerFactory<String, Object> consumerFactory(String groupId) {
         Map<String, Object> props = new HashMap<>();

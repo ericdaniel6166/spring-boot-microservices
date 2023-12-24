@@ -14,6 +14,7 @@ import java.util.List;
 public class StringValidator implements ConstraintValidator<ValidString, Collection<String>> {
 
     final ValidationUtils validationUtils;
+
     List<String> valueList;
     boolean caseSensitive;
     boolean checkNotBlank;

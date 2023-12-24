@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class MessageUtils {
 
-    final MessageSource messageSource;
+    MessageSource messageSource;
 
     public void addViolation(ConstraintValidatorContext constraintValidatorContext, String messageCode, String[] messageParams) {
         constraintValidatorContext.disableDefaultConstraintViolation();

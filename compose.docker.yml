@@ -103,6 +103,7 @@ services:
       - kafka
       - activemq
       - zipkin
+      - user-service
 
   payment-service:
     container_name: payment-service
@@ -124,6 +125,7 @@ services:
       - kafka
       - activemq
       - zipkin
+      - user-service
 
   user-service:
     container_name: user-service
@@ -166,6 +168,7 @@ services:
       - kafka
       - activemq
       - zipkin
+      - user-service
 
   inventory-service:
     container_name: inventory-service
@@ -187,6 +190,7 @@ services:
       - kafka
       - activemq
       - zipkin
+      - user-service
 
   notification-service:
     container_name: notification-service
@@ -207,6 +211,7 @@ services:
       - kafka
       - activemq
       - zipkin
+      - user-service
 
   discovery-server:
     container_name: discovery-server
