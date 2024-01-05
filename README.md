@@ -37,7 +37,6 @@ helping troubleshoot issues in distributed architectures
           inventory-service, etc)
     - discovery-server : https://github.com/ericdaniel6166/discovery-server
     - api-gateway : https://github.com/ericdaniel6166/api-gateway
-    - user-service : https://github.com/ericdaniel6166/user-service
     - product-service : https://github.com/ericdaniel6166/product-service
     - order-service : https://github.com/ericdaniel6166/order-service
     - inventory-service : https://github.com/ericdaniel6166/inventory-service
@@ -51,7 +50,6 @@ helping troubleshoot issues in distributed architectures
 ├── spring-boot-microservices
 ├── discovery-server
 ├── api-gateway
-├── user-service
 ├── product-service
 ├── order-service
 ├── payment-service
@@ -79,12 +77,47 @@ make down
 # Docker compose up
 make local-up
 
-# Start discovery-server, api-gateway, user-service
+# Start discovery-server, api-gateway
 
 # Start microservice   
 
 # Docker compose down
 make local-down
+```
+
+#### Keycloak
+##### Adding to host file
+```bash
+127.0.0.1   keycloak
+```
+##### Admin console
+- Non Docker / standalone environment
+  http://localhost:8090/
+  admin/admin
+- Docker environment
+  http://keycloak:8090/
+  admin/admin
+![img_5.png](img_5.png)- 
+##### Get access token
+- Non Docker / standalone environment
+```bash
+POST http://localhost:8090/realms/spring-boot-microservices-realm/protocol/openid-connect/token
+#Basic Auth
+Username="microservice-auth"
+Password="123456789"
+#form data
+grant_type="client_credentials"
+scope="openid"
+```
+- Docker environment
+```bash
+POST http://keycloak:8090/realms/spring-boot-microservices-realm/protocol/openid-connect/token
+#Basic Auth
+Username="microservice-auth"
+Password="123456789"
+#form data
+grant_type="client_credentials"
+scope="openid"
 ```
 
 ##### Swagger
@@ -97,7 +130,7 @@ http://localhost:9411/
 ![img_3.png](img_3.png)
 ##### ActiveMQ
 http://localhost:8161/
-admin-admin
+admin/admin
 ![img_4.png](img_4.png)
 ##### Apache Kafka
 - Using [Offset Explorer](https://www.kafkatool.com) - a GUI application for managing and using Apache Kafka clusters

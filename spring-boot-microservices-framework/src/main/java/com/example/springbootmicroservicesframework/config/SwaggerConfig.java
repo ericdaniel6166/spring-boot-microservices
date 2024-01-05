@@ -13,10 +13,10 @@ import io.swagger.v3.oas.annotations.servers.Server;
         info = @Info(title = "${swagger.info.title}", version = "${swagger.info.version}", description = "${swagger.info.description}")
 )
 @SecurityScheme(
-        name = "${swagger.security-scheme.name}",
+        name = "bearerAuth",
         type = SecuritySchemeType.HTTP,
-        bearerFormat = "${swagger.security-scheme.bearer-format}",
-        scheme = "${swagger.security-scheme.scheme}"
+        bearerFormat = "JWT",
+        scheme = "bearer"
 )
 public class SwaggerConfig {
 }
