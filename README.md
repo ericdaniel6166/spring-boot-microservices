@@ -97,29 +97,41 @@ make local-down
 - Docker environment
   http://keycloak:8090/
   admin/admin
-![img_5.png](img_5.png)- 
+![img_5.png](img_5.png)
 ##### Get access token
 - Non Docker / standalone environment
 ```bash
 POST http://localhost:8090/realms/spring-boot-microservices-realm/protocol/openid-connect/token
 #Basic Auth
-Username="microservice-auth"
+Username="user-service"
 Password="123456789"
 #form data
-grant_type="client_credentials"
-scope="openid"
+'grant_type="password"'
+'scope="openid offline_access"'
+'username="admin"'
+'password="P@ssw0rd"'
 ```
 - Docker environment
 ```bash
 POST http://keycloak:8090/realms/spring-boot-microservices-realm/protocol/openid-connect/token
 #Basic Auth
-Username="microservice-auth"
+Username="user-service"
 Password="123456789"
 #form data
-grant_type="client_credentials"
-scope="openid"
+'grant_type="password"'
+'scope="openid offline_access"'
+'username="admin"'
+'password="P@ssw0rd"'
 ```
 
+- Account
+```bash
+username/password
+
+admin/P@ssw0rd
+customer/P@ssw0rd
+guest/P@ssw0rd
+```
 ##### Swagger
 
 http://localhost:8181/swagger-ui.html

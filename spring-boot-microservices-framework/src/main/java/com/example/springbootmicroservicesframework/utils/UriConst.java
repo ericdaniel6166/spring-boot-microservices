@@ -5,6 +5,11 @@ public class UriConst {
     public static final String USER_SERVICE_URI = "lb://user-service";
     public static final String USER_SERVICE_CONTEXT_PATH = "/api/user";
     public static final String AUTH = "/auth";
+    public static final String USER = "/user";
+    public static final String ACCOUNT = "/account";
+    public static final String ADMIN = "/admin";
+    public static final String CUSTOMER = "/customer";
+    public static final String GUEST = "/guest";
     public static final String VERIFY_TOKEN = "/verify-token";
 
     public static final String URI_VERIFY_TOKEN = UriConst.USER_SERVICE_URI +
