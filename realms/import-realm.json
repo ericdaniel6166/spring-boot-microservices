@@ -446,6 +446,29 @@
     "notBefore" : 0,
     "groups" : [ "/admin" ]
   }, {
+    "id" : "b68be902-0b58-47d3-b7b8-0f2b282afbec",
+    "createdTimestamp" : 1704624365548,
+    "username" : "adminonly",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : true,
+    "firstName" : "adminOnly",
+    "lastName" : "adminOnly",
+    "email" : "adminonly@adminonly.com",
+    "credentials" : [ {
+      "id" : "a22af2d5-af01-44e6-8484-0ded45d35dd5",
+      "type" : "password",
+      "userLabel" : "My password",
+      "createdDate" : 1704624387928,
+      "secretData" : "{\"value\":\"uRL6v2qOIA1s/DTzzE/ERXCaOcWqblBlJBBBSlQX0kY=\",\"salt\":\"89duPNAU/tcp/x8MFCXz1g==\",\"additionalParameters\":{}}",
+      "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\",\"additionalParameters\":{}}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-spring-boot-microservices-realm", "ADMIN" ],
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
     "id" : "103079cc-8890-4e3f-9e55-14cc40c6afe0",
     "createdTimestamp" : 1704543453318,
     "username" : "customer",
@@ -461,6 +484,26 @@
       "userLabel" : "My password",
       "createdDate" : 1704543476510,
       "secretData" : "{\"value\":\"kqlfx6Oc9rLiRt7ExxnW4/RmPVxYbNCTjnOzZh0JaYw=\",\"salt\":\"2zavs6wgWBxY26Vrav3K5w==\",\"additionalParameters\":{}}",
+      "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\",\"additionalParameters\":{}}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-spring-boot-microservices-realm" ],
+    "notBefore" : 0,
+    "groups" : [ "/customer" ]
+  }, {
+    "id" : "c6ab2ebc-f918-4e47-a86c-71da39093a3e",
+    "createdTimestamp" : 1704606926657,
+    "username" : "customer1",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "email" : "customer1@customer1.com",
+    "credentials" : [ {
+      "id" : "acf83c29-49eb-4950-afcf-e7de785781a0",
+      "type" : "password",
+      "createdDate" : 1704606926691,
+      "secretData" : "{\"value\":\"6DUbsOIcUCd4nlW7i1XqoM0p694oLZ0IGGEH6GPkoNk=\",\"salt\":\"p4CSxXJaz0A4Mps3t1EIhw==\",\"additionalParameters\":{}}",
       "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\",\"additionalParameters\":{}}"
     } ],
     "disableableCredentialTypes" : [ ],
@@ -1384,7 +1427,7 @@
       "subType" : "anonymous",
       "subComponents" : { },
       "config" : {
-        "allowed-protocol-mapper-types" : [ "oidc-usermodel-property-mapper", "saml-user-property-mapper", "saml-role-list-mapper", "oidc-address-mapper", "oidc-usermodel-attribute-mapper", "oidc-full-name-mapper", "oidc-sha256-pairwise-sub-mapper", "saml-user-attribute-mapper" ]
+        "allowed-protocol-mapper-types" : [ "saml-user-property-mapper", "oidc-full-name-mapper", "oidc-sha256-pairwise-sub-mapper", "oidc-usermodel-property-mapper", "saml-user-attribute-mapper", "saml-role-list-mapper", "oidc-address-mapper", "oidc-usermodel-attribute-mapper" ]
       }
     }, {
       "id" : "91f20fe3-c5a8-4635-92df-408bb3109b47",
@@ -1393,7 +1436,7 @@
       "subType" : "authenticated",
       "subComponents" : { },
       "config" : {
-        "allowed-protocol-mapper-types" : [ "oidc-sha256-pairwise-sub-mapper", "oidc-usermodel-attribute-mapper", "saml-role-list-mapper", "oidc-usermodel-property-mapper", "oidc-address-mapper", "saml-user-property-mapper", "saml-user-attribute-mapper", "oidc-full-name-mapper" ]
+        "allowed-protocol-mapper-types" : [ "oidc-full-name-mapper", "saml-role-list-mapper", "oidc-usermodel-property-mapper", "saml-user-property-mapper", "saml-user-attribute-mapper", "oidc-sha256-pairwise-sub-mapper", "oidc-address-mapper", "oidc-usermodel-attribute-mapper" ]
       }
     }, {
       "id" : "c05bc23a-d9a8-4255-98e1-46e127b02cdd",
