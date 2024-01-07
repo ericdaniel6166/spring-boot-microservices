@@ -11,5 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class IdListResponse {
-    List<Long> idList;
+    List<?> idList;
 }

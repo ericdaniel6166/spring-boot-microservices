@@ -47,6 +47,7 @@ public final class Const {
     public static final String HEADER_AUTHORIZATION_PREFIX = "Bearer ";
     public static final MessageResponse MESSAGE_RESPONSE_OK = new MessageResponse(HttpStatus.OK.getReasonPhrase());
     public static final String TRACE_ID = "traceId";
+    public static final String GROUP_CUSTOMER = "customer";
 
     private Const() {
         throw new IllegalStateException("Utility class");

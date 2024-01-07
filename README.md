@@ -103,7 +103,7 @@ make local-down
 ```bash
 POST http://localhost:8090/realms/spring-boot-microservices-realm/protocol/openid-connect/token
 #Basic Auth
-Username="user-service"
+Username="api-gateway"
 Password="123456789"
 #form data
 'grant_type="password"'
@@ -115,7 +115,7 @@ Password="123456789"
 ```bash
 POST http://keycloak:8090/realms/spring-boot-microservices-realm/protocol/openid-connect/token
 #Basic Auth
-Username="user-service"
+Username="api-gateway"
 Password="123456789"
 #form data
 'grant_type="password"'

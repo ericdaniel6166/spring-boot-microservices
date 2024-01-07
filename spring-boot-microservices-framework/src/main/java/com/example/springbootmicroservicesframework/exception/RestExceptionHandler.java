@@ -53,8 +53,8 @@ public class RestExceptionHandler {
         return ExceptionUtils.getRootCause(e).getMessage();
     }
 
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Object> handleNotFoundException(NotFoundException e, HttpServletRequest httpServletRequest) {
+    @ExceptionHandler(AppNotFoundException.class)
+    public ResponseEntity<Object> handleNotFoundException(AppNotFoundException e, HttpServletRequest httpServletRequest) {
         String errorMessage = getRootCauseMessage(e);
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND, e.getError(),
                 errorMessage, httpServletRequest, e.getErrorDetails());
@@ -62,8 +62,8 @@ public class RestExceptionHandler {
         return buildResponseExceptionEntity(errorResponse);
     }
 
-    @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<Object> handleValidationException(ValidationException e, HttpServletRequest httpServletRequest) {
+    @ExceptionHandler(AppValidationException.class)
+    public ResponseEntity<Object> handleValidationException(AppValidationException e, HttpServletRequest httpServletRequest) {
         String errorMessage = getRootCauseMessage(e);
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, e.getError(),
                 errorMessage, httpServletRequest, e.getErrorDetails());
