@@ -1,5 +1,6 @@
 package com.example.springbootmicroservicesframework.config.security;
 
+import com.example.springbootmicroservicesframework.utils.SecurityConst;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,22 +15,22 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Configuration
-@ConditionalOnProperty(name = "keycloak.enabled", havingValue = "true")
-public class KeycloakJwtConfig {
+@ConditionalOnProperty(name = "security.enabled", havingValue = "true")
+public class JwtConfig {
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverterForKeycloak() {
         Converter<Jwt, Collection<GrantedAuthority>> jwtGrantedAuthoritiesConverter = jwt -> {
-            Map<String, Collection<String>> realmAccess = jwt.getClaim("realm_access");
-            Collection<String> roles = realmAccess.get("roles");
+            Map<String, Collection<String>> realmAccess = jwt.getClaim(SecurityConst.REALM_ACCESS);
+            Collection<String> roles = realmAccess.get(SecurityConst.ROLES);
             return roles.stream()
-                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                    .map(role -> new SimpleGrantedAuthority(SecurityConst.ROLE_PREFIX + role))
                     .collect(Collectors.toList());
         };
 
         var jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
-        jwtAuthenticationConverter.setPrincipalClaimName("preferred_username");
+        jwtAuthenticationConverter.setPrincipalClaimName(SecurityConst.PREFERRED_USERNAME);
 
         return jwtAuthenticationConverter;
     }

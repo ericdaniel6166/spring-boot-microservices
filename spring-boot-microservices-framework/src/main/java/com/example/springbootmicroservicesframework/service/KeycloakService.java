@@ -49,4 +49,5 @@ public class KeycloakService {
     public Response createUser(UserRepresentation user) {
         return getUsersResource().create(user);
     }
+
 }

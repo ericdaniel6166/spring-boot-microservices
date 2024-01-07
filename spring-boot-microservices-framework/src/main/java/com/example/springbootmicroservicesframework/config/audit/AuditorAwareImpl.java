@@ -1,5 +1,6 @@
 package com.example.springbootmicroservicesframework.config.audit;
 
+import com.example.springbootmicroservicesframework.utils.AppSecurityUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.AuditorAware;
@@ -18,13 +19,13 @@ public class AuditorAwareImpl implements AuditorAware<String> {
         if (StringUtils.isBlank(applicationName)) {
             applicationName = APPLICATION_NAME_DEFAULT;
         }
-//        String currentAuditor;
-//        if (StringUtils.isNotBlank(CommonUtils.getCurrentUsername())) {
-//            currentAuditor = CommonUtils.getCurrentUsername();
-//        } else {
-//            currentAuditor = applicationName;
-//        }
-        String currentAuditor = applicationName;
+        String currentAuditor;
+        String currentUsername = AppSecurityUtils.getUsername();
+        if (StringUtils.isNotBlank(currentUsername)) {
+            currentAuditor = currentUsername;
+        } else {
+            currentAuditor = applicationName;
+        }
         return Optional.of(currentAuditor);
     }
 }

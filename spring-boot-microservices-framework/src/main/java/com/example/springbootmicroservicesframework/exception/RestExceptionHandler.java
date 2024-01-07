@@ -20,6 +20,7 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -76,13 +77,13 @@ public class RestExceptionHandler {
 //        return buildResponseExceptionEntity(errorResponse);
 //    }
 
-//    @ExceptionHandler(AccessDeniedException.class)
-//    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException e, HttpServletRequest httpServletRequest) {
-//        String errorMessage = getRootCauseMessage(e);
-//        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.FORBIDDEN, HttpStatus.FORBIDDEN.name(),
-//                errorMessage, httpServletRequest, null);
-//        return buildResponseExceptionEntity(errorResponse);
-//    }
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException e, HttpServletRequest httpServletRequest) {
+        String errorMessage = getRootCauseMessage(e);
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.FORBIDDEN, HttpStatus.FORBIDDEN.name(),
+                errorMessage, httpServletRequest, null);
+        return buildResponseExceptionEntity(errorResponse);
+    }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e, HttpServletRequest httpServletRequest,

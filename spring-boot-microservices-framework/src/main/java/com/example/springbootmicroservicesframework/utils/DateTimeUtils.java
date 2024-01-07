@@ -1,5 +1,6 @@
 package com.example.springbootmicroservicesframework.utils;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -22,9 +23,15 @@ public final class DateTimeUtils {
         return result;
     }
 
-    public static LocalDateTime toLocalDateTime(Date dateToConvert) {
-        return dateToConvert.toInstant()
-                .atZone(ZoneId.systemDefault())
+    public static LocalDateTime toLocalDateTime(Date date) {
+        return date.toInstant()
+                .atZone(ZoneId.of(Const.DEFAULT_TIME_ZONE_ID))
                 .toLocalDateTime();
     }
+
+    public static LocalDateTime toLocalDateTime(Long time) {
+        return new Timestamp(time).toLocalDateTime();
+    }
+
+
 }
