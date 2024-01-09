@@ -1,6 +1,6 @@
 package com.example.springbootmicroservicesframework.exception;
 
-import com.example.springbootmicroservicesframework.config.tracing.TraceIdContext;
+import com.example.springbootmicroservicesframework.config.tracing.AppTraceIdContext;
 import com.example.springbootmicroservicesframework.utils.Const;
 import com.example.springbootmicroservicesframework.utils.MessageConstant;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,12 +21,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.HandlerMethod;
@@ -49,36 +50,34 @@ public class RestExceptionHandler {
 
 
     MessageSource messageSource;
-    TraceIdContext traceIdContext;
+    AppTraceIdContext appTraceIdContext;
 
     private static String getRootCauseMessage(Exception e) {
         return ExceptionUtils.getRootCause(e).getMessage();
     }
 
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Object> handleNotFoundException(NotFoundException e, HttpServletRequest httpServletRequest) {
-        String errorMessage = getRootCauseMessage(e);
+    @ExceptionHandler(AppNotFoundException.class)
+    public ResponseEntity<Object> handleNotFoundException(AppNotFoundException e, HttpServletRequest httpServletRequest) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND, e.getError(),
-                errorMessage, httpServletRequest, e.getErrorDetails());
+                e.getMessage(), httpServletRequest, null);
 
         return buildResponseExceptionEntity(errorResponse);
     }
 
-    @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<Object> handleValidationException(ValidationException e, HttpServletRequest httpServletRequest) {
-        String errorMessage = getRootCauseMessage(e);
+    @ExceptionHandler(AppValidationException.class)
+    public ResponseEntity<Object> handleValidationException(AppValidationException e, HttpServletRequest httpServletRequest) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, e.getError(),
-                errorMessage, httpServletRequest, e.getErrorDetails());
+                e.getMessage(), httpServletRequest, e.getErrorDetails());
         return buildResponseExceptionEntity(errorResponse);
     }
 
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException e, HttpServletRequest httpServletRequest) {
-        String errorMessage = getRootCauseMessage(e);
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED, HttpStatus.UNAUTHORIZED.name(),
-                errorMessage, httpServletRequest, null);
-        return buildResponseExceptionEntity(errorResponse);
-    }
+//    @ExceptionHandler(AuthenticationException.class)
+//    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException e, HttpServletRequest httpServletRequest) {
+//        String errorMessage = getRootCauseMessage(e);
+//        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED, HttpStatus.UNAUTHORIZED.name(),
+//                errorMessage, httpServletRequest, null);
+//        return buildResponseExceptionEntity(errorResponse);
+//    }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException e, HttpServletRequest httpServletRequest) {
@@ -91,12 +90,12 @@ public class RestExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e, HttpServletRequest httpServletRequest,
                                                                      HandlerMethod handlerMethod) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
-                ErrorCode.VALIDATION_ERROR.name(), null, httpServletRequest, null);
+
         List<ErrorDetail> errorDetails = e.getConstraintViolations().stream()
                 .map(constraintViolation -> mapConstrainViolationToErrorDetail(constraintViolation, handlerMethod.getBeanType().getSimpleName()))
                 .toList();
-        errorResponse.setErrorDetails(errorDetails);
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
+                ErrorCode.VALIDATION_ERROR.name(), null, httpServletRequest, errorDetails);
 
         return buildResponseExceptionEntity(errorResponse);
     }
@@ -186,12 +185,11 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<Object> handleBindException(BindException e, HttpServletRequest httpServletRequest, HandlerMethod handlerMethod) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
-                ErrorCode.VALIDATION_ERROR.name(), null, httpServletRequest, null);
         List<ErrorDetail> errorDetails = e.getBindingResult().getAllErrors().stream()
                 .map(error -> mapToErrorDetail(handlerMethod, error))
                 .toList();
-        errorResponse.setErrorDetails(errorDetails);
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
+                ErrorCode.VALIDATION_ERROR.name(), null, httpServletRequest, errorDetails);
         return buildResponseExceptionEntity(errorResponse);
     }
 
@@ -211,21 +209,19 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<Object> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e, HttpServletRequest httpServletRequest, HandlerMethod handlerMethod) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
-                ErrorCode.VALIDATION_ERROR.name(), null, httpServletRequest, null);
         List<ErrorDetail> errorDetails = Collections.singletonList(mapMethodArgumentTypeMismatchExceptionToErrorDetail(
                 handlerMethod.getBeanType().getSimpleName(), e, handlerMethod.getMethod().getName()));
-        errorResponse.setErrorDetails(errorDetails);
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
+                ErrorCode.VALIDATION_ERROR.name(), null, httpServletRequest, errorDetails);
         return buildResponseExceptionEntity(errorResponse);
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<Object> handleMissingServletRequestParameterException(MissingServletRequestParameterException e, HttpServletRequest httpServletRequest, HandlerMethod handlerMethod) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
-                ErrorCode.VALIDATION_ERROR.name(), null, httpServletRequest, null);
         List<ErrorDetail> errorDetails = Collections.singletonList(mapMissingServletRequestParameterExceptionToErrorDetail(
                 handlerMethod.getBeanType().getSimpleName(), e, handlerMethod.getMethod().getName()));
-        errorResponse.setErrorDetails(errorDetails);
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
+                ErrorCode.VALIDATION_ERROR.name(), null, httpServletRequest, errorDetails);
         return buildResponseExceptionEntity(errorResponse);
     }
 
@@ -258,9 +254,8 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(AppException.class)
     public ResponseEntity<Object> handleAppException(AppException e, HttpServletRequest httpServletRequest) {
-        String errorMessage = getRootCauseMessage(e);
         ErrorResponse errorResponse = new ErrorResponse(e.getHttpStatus(), e.getError(),
-                errorMessage, httpServletRequest, e.getErrorDetails());
+                e.getMessage(), httpServletRequest, e.getErrorDetails());
         return buildResponseExceptionEntity(errorResponse);
     }
 
@@ -273,7 +268,9 @@ public class RestExceptionHandler {
         return buildResponseExceptionEntity(errorResponse);
     }
 
-    @ExceptionHandler({HttpMessageNotReadableException.class, InvalidDataAccessApiUsageException.class})
+    @ExceptionHandler({HttpMessageNotReadableException.class,
+            ServletRequestBindingException.class,
+            InvalidDataAccessApiUsageException.class})
     public ResponseEntity<Object> handleBadRequestException(Exception e, HttpServletRequest httpServletRequest) {
         String errorMessage = getRootCauseMessage(e);
         log.info(errorMessage);
@@ -282,9 +279,18 @@ public class RestExceptionHandler {
         return buildResponseExceptionEntity(errorResponse);
     }
 
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<Object> handleMethodNotAllowedException(Exception e, HttpServletRequest httpServletRequest) {
+        String errorMessage = getRootCauseMessage(e);
+        log.info(errorMessage);
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.METHOD_NOT_ALLOWED, HttpStatus.METHOD_NOT_ALLOWED.name(),
+                HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase(), httpServletRequest, null);
+        return buildResponseExceptionEntity(errorResponse);
+    }
+
     private ResponseEntity<Object> buildResponseExceptionEntity(ErrorResponse errorResponse) {
-        if (ObjectUtils.isNotEmpty(traceIdContext)) {
-            errorResponse.setTraceId(traceIdContext.getTraceId());
+        if (ObjectUtils.isNotEmpty(appTraceIdContext)) {
+            errorResponse.setTraceId(appTraceIdContext.getTraceId());
         }
         return new ResponseEntity<>(errorResponse, errorResponse.getHttpStatus());
     }

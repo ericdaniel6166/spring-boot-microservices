@@ -1,4 +1,4 @@
-version: '3'
+version: '3.9'
 services:
   postgres-order:
     container_name: postgres-order
@@ -16,6 +16,11 @@ services:
     networks:
       - internal-network
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   postgres-payment:
     container_name: postgres-payment
@@ -33,6 +38,11 @@ services:
     networks:
       - internal-network
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   postgres-user:
     container_name: postgres-user
@@ -50,6 +60,11 @@ services:
     networks:
       - internal-network
     restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   postgres-product:
     container_name: postgres-product
@@ -67,6 +82,11 @@ services:
     networks:
       - internal-network
     restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   postgres-inventory:
     container_name: postgres-inventory
@@ -82,6 +102,11 @@ services:
     networks:
       - internal-network
     restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   order-service:
     container_name: order-service
@@ -97,13 +122,20 @@ services:
     networks:
       - internal-network
     depends_on:
-      - postgres-order
-      - discovery-server
-      - api-gateway
-      - kafka
-      - activemq
-      - zipkin
-      - user-service
+      postgres-order:
+        condition: service_healthy
+      discovery-server:
+        condition: service_started
+      api-gateway:
+        condition: service_started
+      kafka:
+        condition: service_started
+      activemq:
+        condition: service_started
+      zipkin:
+        condition: service_started
+      keycloak:
+        condition: service_healthy
 
   payment-service:
     container_name: payment-service
@@ -119,13 +151,20 @@ services:
     networks:
       - internal-network
     depends_on:
-      - postgres-payment
-      - discovery-server
-      - api-gateway
-      - kafka
-      - activemq
-      - zipkin
-      - user-service
+      postgres-payment:
+        condition: service_healthy
+      discovery-server:
+        condition: service_started
+      api-gateway:
+        condition: service_started
+      kafka:
+        condition: service_started
+      activemq:
+        condition: service_started
+      zipkin:
+        condition: service_started
+      keycloak:
+        condition: service_healthy
 
   user-service:
     container_name: user-service
@@ -141,12 +180,20 @@ services:
     networks:
       - internal-network
     depends_on:
-      - postgres-user
-      - discovery-server
-      - api-gateway
-      - kafka
-      - activemq
-      - zipkin
+      postgres-user:
+        condition: service_healthy
+      discovery-server:
+        condition: service_started
+      api-gateway:
+        condition: service_started
+      kafka:
+        condition: service_started
+      activemq:
+        condition: service_started
+      zipkin:
+        condition: service_started
+      keycloak:
+        condition: service_healthy
 
   product-service:
     container_name: product-service
@@ -162,13 +209,20 @@ services:
     networks:
       - internal-network
     depends_on:
-      - postgres-product
-      - discovery-server
-      - api-gateway
-      - kafka
-      - activemq
-      - zipkin
-      - user-service
+      postgres-product:
+        condition: service_healthy
+      discovery-server:
+        condition: service_started
+      api-gateway:
+        condition: service_started
+      kafka:
+        condition: service_started
+      activemq:
+        condition: service_started
+      zipkin:
+        condition: service_started
+      keycloak:
+        condition: service_healthy
 
   inventory-service:
     container_name: inventory-service
@@ -184,13 +238,20 @@ services:
     networks:
       - internal-network
     depends_on:
-      - postgres-inventory
-      - discovery-server
-      - api-gateway
-      - kafka
-      - activemq
-      - zipkin
-      - user-service
+      postgres-inventory:
+        condition: service_healthy
+      discovery-server:
+        condition: service_started
+      api-gateway:
+        condition: service_started
+      kafka:
+        condition: service_started
+      activemq:
+        condition: service_started
+      zipkin:
+        condition: service_started
+      keycloak:
+        condition: service_healthy
 
   notification-service:
     container_name: notification-service
@@ -206,12 +267,18 @@ services:
     networks:
       - internal-network
     depends_on:
-      - discovery-server
-      - api-gateway
-      - kafka
-      - activemq
-      - zipkin
-      - user-service
+      discovery-server:
+        condition: service_started
+      api-gateway:
+        condition: service_started
+      kafka:
+        condition: service_started
+      activemq:
+        condition: service_started
+      zipkin:
+        condition: service_started
+      keycloak:
+        condition: service_healthy
 
   discovery-server:
     container_name: discovery-server
@@ -227,7 +294,8 @@ services:
     expose:
       - "8761"
     depends_on:
-      - zipkin
+      zipkin:
+        condition: service_started
 
   api-gateway:
     container_name: api-gateway
@@ -243,21 +311,12 @@ services:
     networks:
       - internal-network
     depends_on:
-      - discovery-server
-      - zipkin
-  #      - keycloak
-
-  #  keycloak:
-  #    image: quay.io/keycloak/keycloak:22.0.1
-  #    container_name: keycloak
-  #    command: [ "start-dev", "--import-realm" ]
-  #    environment:
-  #      KEYCLOAK_ADMIN: admin
-  #      KEYCLOAK_ADMIN_PASSWORD: admin
-  #    ports:
-  #      - "8080:8080"
-  #    volumes:
-  #      - ./realms/:/opt/keycloak/data/import/
+      discovery-server:
+        condition: service_started
+      zipkin:
+        condition: service_started
+      keycloak:
+        condition: service_healthy
 
   zipkin:
     image: openzipkin/zipkin:2.24.3
@@ -267,6 +326,61 @@ services:
     networks:
       - internal-network
 
+  postgres-keycloak:
+    container_name: postgres-keycloak
+    image: postgres:14.9-alpine
+    environment:
+      POSTGRES_DB: keycloak_service
+      POSTGRES_PASSWORD: secret
+      POSTGRES_USER: postgres
+    ports:
+      - "5439:5432"
+    volumes:
+      - postgres-keycloak-data:/var/lib/postgresql/data
+    networks:
+      - internal-network
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  keycloak:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:23.0.3
+    command:
+      - "start-dev"
+      - "--features=preview"
+      - "--import-realm"
+#      - "--features=token-exchange,declarative-user-profile"
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres-keycloak:5432/keycloak_service
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: secret
+      KC_DEBUG: true
+      KC_DEBUG_PORT: "*:8787"
+      KC_HTTP_PORT: 8090
+      KC_HEALTH_ENABLED: true
+      TZ: UTC
+    ports:
+      - "8090:8090"
+      - "8787:8787"
+    networks:
+      - internal-network
+    depends_on:
+      postgres-keycloak:
+        condition: service_healthy
+    volumes:
+      - ./realms/:/opt/keycloak/data/import/
+    healthcheck:
+      test: ['CMD-SHELL', '[ -f /tmp/HealthCheck.java ] || echo "public class HealthCheck { public static void main(String[] args) throws java.lang.Throwable { System.exit(java.net.HttpURLConnection.HTTP_OK == ((java.net.HttpURLConnection)new java.net.URL(args[0]).openConnection()).getResponseCode() ? 0 : 1); } }" > /tmp/HealthCheck.java && java /tmp/HealthCheck.java http://localhost:8090/health/live']
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.0.1
@@ -295,7 +409,8 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_started
 
   activemq:
     image: symptoma/activemq:5.15.13
@@ -317,7 +432,6 @@ services:
       - activemq-data:/data/activemq
       - activemq-log:/var/log/activemq
 
-
 networks:
   internal-network:
 
@@ -327,5 +441,6 @@ volumes:
   postgres-payment-data:
   postgres-user-data:
   postgres-inventory-data:
+  postgres-keycloak-data:
   activemq-data:
   activemq-log:
