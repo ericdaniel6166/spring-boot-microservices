@@ -95,6 +95,7 @@ make local-down
 ##### Admin console
 ```bash
 Non Docker / standalone environment: http://localhost:8090/
+
 Docker environment: http://keycloak:8090/
 
 username/password
@@ -103,31 +104,19 @@ admin/admin
 ```
 ![img_5.png](img_5.png)
 ##### Get access token
-- Non Docker / standalone environment
 ```bash
-POST http://localhost:8090/realms/spring-boot-microservices-realm/protocol/openid-connect/token
-#Basic Auth
-Username="microservices-auth-client"
-Password="123456789"
-#form data
-'grant_type="password"'
-'scope="openid offline_access"'
-'username="admin"'
-'password="P@ssw0rd"'
-```
-- Docker environment
-```bash
-POST http://keycloak:8090/realms/spring-boot-microservices-realm/protocol/openid-connect/token
-#Basic Auth
-Username="microservices-auth-client"
-Password="123456789"
-#form data
-'grant_type="password"'
-'scope="openid offline_access"'
-'username="admin"'
-'password="P@ssw0rd"'
-```
+Non Docker / standalone environment: POST http://localhost:8090/realms/spring-boot-microservices-realm/protocol/openid-connect/token
 
+Docker environment: POST http://keycloak:8090/realms/spring-boot-microservices-realm/protocol/openid-connect/token
+#Basic Auth
+Username="microservices-auth-client"
+Password="123456789"
+#form data
+'grant_type="password"'
+'scope="openid offline_access"'
+'username="admin"'
+'password="P@ssw0rd"'
+```
 - Account
 ```bash
 username/password
