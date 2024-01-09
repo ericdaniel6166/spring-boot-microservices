@@ -25,7 +25,9 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.HandlerMethod;
@@ -266,12 +268,23 @@ public class RestExceptionHandler {
         return buildResponseExceptionEntity(errorResponse);
     }
 
-    @ExceptionHandler({HttpMessageNotReadableException.class, InvalidDataAccessApiUsageException.class})
+    @ExceptionHandler({HttpMessageNotReadableException.class,
+            ServletRequestBindingException.class,
+            InvalidDataAccessApiUsageException.class})
     public ResponseEntity<Object> handleBadRequestException(Exception e, HttpServletRequest httpServletRequest) {
         String errorMessage = getRootCauseMessage(e);
         log.info(errorMessage);
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.name(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(), httpServletRequest, null);
+        return buildResponseExceptionEntity(errorResponse);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<Object> handleMethodNotAllowedException(Exception e, HttpServletRequest httpServletRequest) {
+        String errorMessage = getRootCauseMessage(e);
+        log.info(errorMessage);
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.METHOD_NOT_ALLOWED, HttpStatus.METHOD_NOT_ALLOWED.name(),
+                HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase(), httpServletRequest, null);
         return buildResponseExceptionEntity(errorResponse);
     }
 

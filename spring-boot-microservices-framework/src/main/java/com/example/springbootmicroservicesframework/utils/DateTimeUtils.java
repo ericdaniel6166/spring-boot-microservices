@@ -25,7 +25,7 @@ public final class DateTimeUtils {
 
     public static LocalDateTime toLocalDateTime(Date date) {
         return date.toInstant()
-                .atZone(ZoneId.of(Const.DEFAULT_TIME_ZONE_ID))
+                .atZone(ZoneId.of(Const.DEFAULT_TIME_ZONE_ID_STRING))
                 .toLocalDateTime();
     }
 

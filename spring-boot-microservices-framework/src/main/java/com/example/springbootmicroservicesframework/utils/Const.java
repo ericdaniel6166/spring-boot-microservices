@@ -2,6 +2,7 @@ package com.example.springbootmicroservicesframework.utils;
 
 import org.springframework.data.domain.Sort;
 
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 public final class Const {
@@ -31,7 +32,8 @@ public final class Const {
     public static final DateTimeFormatter DEFAULT_DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE; //change
     public static final String DEFAULT_DATE_TIME_PATTERN = " yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"; //change
     public static final DateTimeFormatter DEFAULT_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_PATTERN); //change
-    public static final String DEFAULT_TIME_ZONE_ID = "UTC"; //change
+    public static final String DEFAULT_TIME_ZONE_ID_STRING = "UTC"; //change
+    public static final ZoneId DEFAULT_ZONE_ID = ZoneId.of(DEFAULT_TIME_ZONE_ID_STRING); //change
     public static final Sort.Order DEFAULT_SORT_ORDER = new Sort.Order(Sort.Direction.ASC, ID);
 
     private Const() {

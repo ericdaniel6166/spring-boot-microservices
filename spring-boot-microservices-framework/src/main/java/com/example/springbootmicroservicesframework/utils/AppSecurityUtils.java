@@ -5,13 +5,16 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -28,16 +31,15 @@ public class AppSecurityUtils {
 
     public static boolean hasAnyRole(String... roles) {
         Collection<String> authorities = getAuthorities();
-        for (var role: roles) {
-            String roleWithPrefix = getRoleWithPrefix(SecurityConst.ROLE_PREFIX, role);
-            if (authorities.contains(roleWithPrefix)) {
+        for (var role : roles) {
+            if (authorities.contains(getRoleWithPrefix(SecurityConst.ROLE_PREFIX, role))) {
                 return true;
             }
         }
         return false;
     }
 
-    private static String getRoleWithPrefix(String prefix,String role) {
+    private static String getRoleWithPrefix(String prefix, String role) {
         return role.startsWith(prefix) ? role : prefix + role;
     }
 
@@ -51,27 +53,47 @@ public class AppSecurityUtils {
                 .collect(Collectors.toList());
     }
 
-    public static String getPreferredUsername () {
+    public static String getPreferredUsername() {
         return String.valueOf(getClaim(SecurityConst.PREFERRED_USERNAME));
     }
 
-    public static String getUsername () {
+    public static String getUsername() {
+        return getAuthentication().getName();
+    }
+
+    public static String getAuthenticationName() {
+        return getAuthentication().getName();
+    }
+
+    public static String getCurrentAuditor() {
         try {
-            return getAuthentication().getName();
-        } catch (Exception e) {
-            return null;
+            return getUsername();
+        } catch (NullPointerException ignored) {
+            return SecurityConst.DEFAULT_CURRENT_AUDITOR;
         }
     }
 
-    public static String getEmail () {
+    public static String getEmail() {
         return String.valueOf(getClaim(SecurityConst.EMAIL));
     }
 
-    public static Boolean getEmailVerified () {
+    public static String getFullName() {
+        return String.valueOf(getClaim(SecurityConst.NAME));
+    }
+
+    public static String getFirstName() {
+        return String.valueOf(getClaim(SecurityConst.GIVEN_NAME));
+    }
+
+    public static String getLastName() {
+        return String.valueOf(getClaim(SecurityConst.FAMILY_NAME));
+    }
+
+    public static Boolean getEmailVerified() {
         return (Boolean) getClaim(SecurityConst.EMAIL_VERIFIED);
     }
 
-    public static String getScope () {
+    public static String getScope() {
         return String.valueOf(getClaim(SecurityConst.SCOPE));
     }
 
@@ -84,10 +106,64 @@ public class AppSecurityUtils {
     }
 
     private static Jwt getJwt() {
-         return (Jwt) getAuthentication().getPrincipal();
+        return (Jwt) getAuthentication().getPrincipal();
     }
 
-    private static Authentication getAuthentication() {
-        return SecurityContextHolder.getContext().getAuthentication();
+    private static Map<String, Object> getHeaders() {
+        return getJwt().getHeaders();
     }
+
+    public static String getJwtId() {
+        return getJwt().getId();
+    }
+
+    public static List<String> getAudience() {
+        return getJwt().getAudience();
+    }
+
+    public static String getSubject() {
+        return getJwt().getSubject();
+    }
+
+    public static String getTokenValue() {
+        return getJwt().getTokenValue();
+    }
+
+    public static LocalDateTime getExpiresAt() {
+        return LocalDateTime.ofInstant(getJwt().getExpiresAt(), Const.DEFAULT_ZONE_ID);
+    }
+
+    public static LocalDateTime getIssuedAt() {
+        return LocalDateTime.ofInstant(getJwt().getIssuedAt(), Const.DEFAULT_ZONE_ID);
+    }
+
+    public static LocalDateTime getNotBefore() {
+        try {
+            return LocalDateTime.ofInstant(getJwt().getNotBefore(), Const.DEFAULT_ZONE_ID);
+        } catch (NullPointerException ignored) {
+            return null;
+        }
+
+    }
+
+    public static String getIssuer() {
+        return getJwt().getIssuer().toString();
+    }
+
+    private static JwtAuthenticationToken getAuthentication() {
+        return (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+    }
+
+    private static WebAuthenticationDetails getDetails() {
+        return (WebAuthenticationDetails) getAuthentication().getDetails();
+    }
+
+    public static String getRemoteAddress() {
+        return getDetails().getRemoteAddress();
+    }
+
+    public static String getSessionId() {
+        return getDetails().getSessionId();
+    }
+
 }

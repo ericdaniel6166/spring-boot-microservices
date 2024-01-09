@@ -37,6 +37,7 @@ helping troubleshoot issues in distributed architectures
           inventory-service, etc)
     - discovery-server : https://github.com/ericdaniel6166/discovery-server
     - api-gateway : https://github.com/ericdaniel6166/api-gateway
+    - user-service : https://github.com/ericdaniel6166/user-service
     - product-service : https://github.com/ericdaniel6166/product-service
     - order-service : https://github.com/ericdaniel6166/order-service
     - inventory-service : https://github.com/ericdaniel6166/inventory-service
@@ -50,6 +51,7 @@ helping troubleshoot issues in distributed architectures
 ├── spring-boot-microservices
 ├── discovery-server
 ├── api-gateway
+├── user-service
 ├── product-service
 ├── order-service
 ├── payment-service
@@ -58,7 +60,10 @@ helping troubleshoot issues in distributed architectures
 ```
 
 ## Running the app
-
+##### Adding to host file
+```bash
+127.0.0.1   keycloak
+```
 ##### Run command in spring-boot-microservices directory
 
 - Docker environment
@@ -77,7 +82,7 @@ make down
 # Docker compose up
 make local-up
 
-# Start discovery-server, api-gateway
+# Start discovery-server, api-gateway, user-service
 
 # Start microservice   
 
@@ -86,24 +91,23 @@ make local-down
 ```
 
 #### Keycloak
-##### Adding to host file
-```bash
-127.0.0.1   keycloak
-```
+
 ##### Admin console
-- Non Docker / standalone environment
-  http://localhost:8090/
-  admin/admin
-- Docker environment
-  http://keycloak:8090/
-  admin/admin
+```bash
+Non Docker / standalone environment: http://localhost:8090/
+Docker environment: http://keycloak:8090/
+
+username/password
+
+admin/admin
+```
 ![img_5.png](img_5.png)
 ##### Get access token
 - Non Docker / standalone environment
 ```bash
 POST http://localhost:8090/realms/spring-boot-microservices-realm/protocol/openid-connect/token
 #Basic Auth
-Username="api-gateway"
+Username="microservices-auth-client"
 Password="123456789"
 #form data
 'grant_type="password"'
@@ -115,7 +119,7 @@ Password="123456789"
 ```bash
 POST http://keycloak:8090/realms/spring-boot-microservices-realm/protocol/openid-connect/token
 #Basic Auth
-Username="api-gateway"
+Username="microservices-auth-client"
 Password="123456789"
 #form data
 'grant_type="password"'
@@ -133,19 +137,32 @@ customer/P@ssw0rd
 guest/P@ssw0rd
 ```
 ##### Swagger
-
+```bash
 http://localhost:8181/swagger-ui.html
+```
 ![img.png](img.png)
 ![img_1.png](img_1.png)
 ##### Zipkin
+```bash
 http://localhost:9411/
+```
 ![img_3.png](img_3.png)
 ##### ActiveMQ
+```bash
 http://localhost:8161/
+
+username/password
+
 admin/admin
+```
 ![img_4.png](img_4.png)
 ##### Apache Kafka
 - Using [Offset Explorer](https://www.kafkatool.com) - a GUI application for managing and using Apache Kafka clusters
+```bash
+Cluster name: spring-boot-microservices
+Zookeeper Host: localhost
+Zookeeper Port: 2181
+```
 ![img_2.png](img_2.png)
 ## Sequence diagrams (Updating...)
 

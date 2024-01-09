@@ -269,10 +269,10 @@
         "attributes" : { }
       } ],
       "security-admin-console" : [ ],
-      "api-gateway" : [ ],
+      "microservices-auth-client" : [ ],
       "admin-cli" : [ ],
       "account-console" : [ ],
-      "user-service" : [ {
+      "microservices-admin-client" : [ {
         "id" : "5b4a9116-618b-4ffc-963f-277e69e4d8cd",
         "name" : "uma_protection",
         "composite" : false,
@@ -537,18 +537,18 @@
   }, {
     "id" : "a3845511-d2b8-46e1-9d7c-921ba2ac19dd",
     "createdTimestamp" : 1704516428432,
-    "username" : "service-account-user-service",
+    "username" : "service-account-microservices-admin-client",
     "enabled" : true,
     "totp" : false,
     "emailVerified" : false,
-    "serviceAccountClientId" : "user-service",
+    "serviceAccountClientId" : "microservices-admin-client",
     "credentials" : [ ],
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ ],
     "realmRoles" : [ "default-roles-spring-boot-microservices-realm" ],
     "clientRoles" : {
       "realm-management" : [ "manage-users" ],
-      "user-service" : [ "uma_protection" ]
+      "microservices-admin-client" : [ "uma_protection" ]
     },
     "notBefore" : 0,
     "groups" : [ ]
@@ -662,7 +662,7 @@
     "optionalClientScopes" : [ "address", "phone", "offline_access", "microprofile-jwt" ]
   }, {
     "id" : "3c746351-9057-41c1-b169-edb7ee9ad8ed",
-    "clientId" : "api-gateway",
+    "clientId" : "microservices-auth-client",
     "name" : "",
     "description" : "",
     "rootUrl" : "",
@@ -804,7 +804,7 @@
     "optionalClientScopes" : [ "address", "phone", "offline_access", "microprofile-jwt" ]
   }, {
     "id" : "288ddbe9-e836-4ad5-b389-b7ec43398291",
-    "clientId" : "user-service",
+    "clientId" : "microservices-admin-client",
     "name" : "",
     "description" : "",
     "rootUrl" : "",
