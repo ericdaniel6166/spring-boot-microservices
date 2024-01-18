@@ -136,6 +136,8 @@ services:
         condition: service_started
       keycloak:
         condition: service_healthy
+      redis:
+        condition: service_healthy
 
   payment-service:
     container_name: payment-service
@@ -164,6 +166,8 @@ services:
       zipkin:
         condition: service_started
       keycloak:
+        condition: service_healthy
+      redis:
         condition: service_healthy
 
   user-service:
@@ -194,6 +198,8 @@ services:
         condition: service_started
       keycloak:
         condition: service_healthy
+      redis:
+        condition: service_healthy
 
   product-service:
     container_name: product-service
@@ -222,6 +228,8 @@ services:
       zipkin:
         condition: service_started
       keycloak:
+        condition: service_healthy
+      redis:
         condition: service_healthy
 
   inventory-service:
@@ -252,6 +260,8 @@ services:
         condition: service_started
       keycloak:
         condition: service_healthy
+      redis:
+        condition: service_healthy
 
   notification-service:
     container_name: notification-service
@@ -278,6 +288,8 @@ services:
       zipkin:
         condition: service_started
       keycloak:
+        condition: service_healthy
+      redis:
         condition: service_healthy
 
   discovery-server:
@@ -432,6 +444,26 @@ services:
       - activemq-data:/data/activemq
       - activemq-log:/var/log/activemq
 
+  redis:
+    image: redis:7.2-alpine
+    container_name: redis
+    restart: always
+    command:
+      - "redis-server"
+      - "--save 20 1"
+      - "--loglevel warning"
+    ports:
+      - "6379:6379"
+    networks:
+      - internal-network
+    volumes:
+      - cache:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
 networks:
   internal-network:
 
@@ -444,3 +476,4 @@ volumes:
   postgres-keycloak-data:
   activemq-data:
   activemq-log:
+  cache:
