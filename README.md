@@ -2,16 +2,18 @@
 
 ## List what has been used
 
-- [Spring Boot](https://spring.io/projects/spring-boot) web framework, makes it easy to create stand-alone,
+- [Spring Boot](https://spring.io/projects/spring-boot), web framework, makes it easy to create stand-alone,
   production-grade Spring based Applications
-- [Apache Kafka](https://kafka.apache.org/) distributed and fault-tolerant stream processing system.
-- [Spring Cloud Netflix Eureka](https://spring.io/projects/spring-cloud-netflix) service discovery, 
+- [Apache Kafka](https://kafka.apache.org/), distributed and fault-tolerant stream processing system.
+- [Spring Cloud Netflix Eureka](https://spring.io/projects/spring-cloud-netflix), service discovery, 
 allows services to find and communicate with each other without hard-coding the hostname and port
-- [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway) api gateway, provide a simple, yet effective
+- [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway), api gateway, provide a simple, yet effective
   way to route to APIs and provide cross-cutting concerns to them such as: security, monitoring/metrics, and resiliency.
-- [Resilience4j](https://github.com/resilience4j/resilience4j) library, helps prevent cascading failures
+- [Spring Data Redis](https://docs.spring.io/spring-data/redis/reference/redis/redis-cache.html), provides an implementation of Spring Framework’s Cache Abstraction
+- [Spring Integration](https://docs.spring.io/spring-integration/reference/mqtt.html), provides inbound and outbound channel adapters to support the Message Queueing Telemetry Transport (MQTT) protocol.
+- [Resilience4j](https://github.com/resilience4j/resilience4j), library, helps prevent cascading failures
   and provides mechanisms for graceful degradation and self-healing when external services experience issues
-- [Zipkin](https://zipkin.io/) distributed tracing system, provides end-to-end visibility into how requests flow through the system, 
+- [Zipkin](https://zipkin.io/), distributed tracing system, provides end-to-end visibility into how requests flow through the system, 
 helping troubleshoot issues in distributed architectures
 - ~~Spring Cloud Sleuth, autoconfiguration for distributed tracing~~
 - [Micrometer Tracing](https://micrometer.io/docs/tracing) with Brave, library for distributed tracing (update to Spring Boot 3.x)

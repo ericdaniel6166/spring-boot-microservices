@@ -13,9 +13,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Constraint(
-        validatedBy = {StringValidator.class}
+        validatedBy = {CollectionStringValidator.class}
 )
-public @interface ValidString {
+public @interface ValidCollectionString {
     String[] values() default {};
 
     boolean caseSensitive() default true;
@@ -23,8 +23,6 @@ public @interface ValidString {
     String message() default "";
 
     String messageCode() default "";
-
-    boolean checkNotBlank() default false;
 
     String[] messageParams() default {};
 

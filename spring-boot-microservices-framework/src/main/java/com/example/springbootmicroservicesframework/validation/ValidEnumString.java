@@ -25,8 +25,6 @@ public @interface ValidEnumString {
 
     String messageCode() default "";
 
-    boolean checkNotBlank() default false;
-
     String[] messageParams() default {};
 
     Class<?>[] groups() default {};
