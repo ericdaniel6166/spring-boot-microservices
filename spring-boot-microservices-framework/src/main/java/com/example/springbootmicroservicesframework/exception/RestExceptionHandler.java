@@ -58,7 +58,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(AppNotFoundException.class)
     public ResponseEntity<Object> handleNotFoundException(AppNotFoundException e, HttpServletRequest httpServletRequest) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND, e.getError(),
+        var errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND, e.getError(),
                 e.getMessage(), httpServletRequest, null);
 
         return buildResponseExceptionEntity(errorResponse);
@@ -66,7 +66,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(AppValidationException.class)
     public ResponseEntity<Object> handleValidationException(AppValidationException e, HttpServletRequest httpServletRequest) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, e.getError(),
+        var errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, e.getError(),
                 e.getMessage(), httpServletRequest, e.getErrorDetails());
         return buildResponseExceptionEntity(errorResponse);
     }
@@ -81,8 +81,8 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException e, HttpServletRequest httpServletRequest) {
-        String errorMessage = getRootCauseMessage(e);
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.FORBIDDEN, HttpStatus.FORBIDDEN.name(),
+        var errorMessage = getRootCauseMessage(e);
+        var errorResponse = new ErrorResponse(HttpStatus.FORBIDDEN, HttpStatus.FORBIDDEN.name(),
                 errorMessage, httpServletRequest, null);
         return buildResponseExceptionEntity(errorResponse);
     }
@@ -91,26 +91,26 @@ public class RestExceptionHandler {
     public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e, HttpServletRequest httpServletRequest,
                                                                      HandlerMethod handlerMethod) {
 
-        List<ErrorDetail> errorDetails = e.getConstraintViolations().stream()
+        var errorDetails = e.getConstraintViolations().stream()
                 .map(constraintViolation -> mapConstrainViolationToErrorDetail(constraintViolation, handlerMethod.getBeanType().getSimpleName()))
                 .toList();
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
+        var errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
                 ErrorCode.VALIDATION_ERROR.name(), null, httpServletRequest, errorDetails);
 
         return buildResponseExceptionEntity(errorResponse);
     }
 
     private ErrorDetail mapConstrainViolationToErrorDetail(ConstraintViolation<?> constraintViolation, String apiClassName) {
-        String propertyPath = constraintViolation.getPropertyPath().toString();
-        String keyClass = String.format(KEY_TEMPLATE, apiClassName, propertyPath);
-        String[] parts = propertyPath.split("\\.");
+        var propertyPath = constraintViolation.getPropertyPath().toString();
+        var keyClass = String.format(KEY_TEMPLATE, apiClassName, propertyPath);
+        var parts = propertyPath.split("\\.");
         Assert.isTrue(parts.length > 0, "parts length must be greater than 0");
-        String field = parts[parts.length - 1];
-        String keyField = String.format(KEY_TEMPLATE, Const.COMMON, field);
-        String model = getModel(keyClass, keyField);
-        String msg = constraintViolation.getMessage();
+        var field = parts[parts.length - 1];
+        var keyField = String.format(KEY_TEMPLATE, Const.COMMON, field);
+        var model = getModel(keyClass, keyField);
+        var msg = constraintViolation.getMessage();
         if (constraintViolation.getMessage().contains(Const.PLACEHOLDER_0)) {
-            MessageFormat messageFormat = new MessageFormat(constraintViolation.getMessage());
+            var messageFormat = new MessageFormat(constraintViolation.getMessage());
             msg = messageFormat.format(new Object[]{model});
         }
         return new ValidationErrorDetail(keyClass, field, null,
@@ -118,9 +118,9 @@ public class RestExceptionHandler {
     }
 
     private ErrorDetail mapFieldErrorToErrorDetail(FieldError fieldError, String apiClassName) {
-        String keyClass = String.format(KEY_CLASS_TEMPLATE, apiClassName, fieldError.getObjectName(), fieldError.getField());
-        String keyField = String.format(KEY_TEMPLATE, Const.COMMON, fieldError.getField());
-        String model = getModel(keyClass, keyField);
+        var keyClass = String.format(KEY_CLASS_TEMPLATE, apiClassName, fieldError.getObjectName(), fieldError.getField());
+        var keyField = String.format(KEY_TEMPLATE, Const.COMMON, fieldError.getField());
+        var model = getModel(keyClass, keyField);
         String messageTemplate = null;
         if (ObjectUtils.isNotEmpty(fieldError.getCodes())) {
             for (String errorCode : fieldError.getCodes()) {
@@ -136,9 +136,9 @@ public class RestExceptionHandler {
             messageTemplate = fieldError.getDefaultMessage();
         }
         Assert.isTrue(messageTemplate != null, "messageTemplate is not null");
-        String msg = messageTemplate;
+        var msg = messageTemplate;
         if (messageTemplate.contains(Const.PLACEHOLDER_0)) {
-            MessageFormat messageFormat = new MessageFormat(messageTemplate);
+            var messageFormat = new MessageFormat(messageTemplate);
             msg = messageFormat.format(new Object[]{model});
         }
         return new ValidationErrorDetail(keyClass, fieldError.getField(), null,
@@ -146,24 +146,24 @@ public class RestExceptionHandler {
     }
 
     private ErrorDetail mapMethodArgumentTypeMismatchExceptionToErrorDetail(String apiClassName, MethodArgumentTypeMismatchException e, String methodName) {
-        String parameterName = e.getParameter().getParameterName();
-        String keyClass = String.format(KEY_CLASS_TEMPLATE, apiClassName, methodName, parameterName);
-        String keyField = String.format(KEY_TEMPLATE, Const.COMMON, parameterName);
-        String model = getModel(keyClass, keyField);
-        Class<?> requiredType = e.getRequiredType();
+        var parameterName = e.getParameter().getParameterName();
+        var keyClass = String.format(KEY_CLASS_TEMPLATE, apiClassName, methodName, parameterName);
+        var keyField = String.format(KEY_TEMPLATE, Const.COMMON, parameterName);
+        var model = getModel(keyClass, keyField);
+        var requiredType = e.getRequiredType();
         Assert.isTrue( requiredType != null, "requiredType is not null");
-        String errorCode = String.format(KEY_TEMPLATE, e.getErrorCode(), requiredType.getName());
-        String message = getErrorMessage(model, errorCode, e.getMessage());
+        var errorCode = String.format(KEY_TEMPLATE, e.getErrorCode(), requiredType.getName());
+        var message = getErrorMessage(model, errorCode, e.getMessage());
         return new ValidationErrorDetail(keyClass, parameterName, null,
                 e.getValue(), StringUtils.capitalize(message));
     }
 
     private ErrorDetail mapMissingServletRequestParameterExceptionToErrorDetail(String apiClassName, MissingServletRequestParameterException e, String methodName) {
-        String parameterName = e.getParameterName();
-        String keyClass = String.format(KEY_CLASS_TEMPLATE, apiClassName, methodName, parameterName);
-        String keyField = String.format(KEY_TEMPLATE, Const.COMMON, parameterName);
-        String model = getModel(keyClass, keyField);
-        String message = getErrorMessage(model, MessageConstant.MSG_ERR_CONSTRAINS_REQUIRED, e.getMessage());
+        var parameterName = e.getParameterName();
+        var keyClass = String.format(KEY_CLASS_TEMPLATE, apiClassName, methodName, parameterName);
+        var keyField = String.format(KEY_TEMPLATE, Const.COMMON, parameterName);
+        var model = getModel(keyClass, keyField);
+        var message = getErrorMessage(model, MessageConstant.MSG_ERR_CONSTRAINS_REQUIRED, e.getMessage());
         return new ValidationErrorDetail(keyClass, parameterName, null,
                 null, StringUtils.capitalize(message));
     }
@@ -178,17 +178,17 @@ public class RestExceptionHandler {
         if (StringUtils.isBlank(messageTemplate)) {
             messageTemplate = message;
         }
-        MessageFormat messageFormat = new MessageFormat(messageTemplate);
+        var messageFormat = new MessageFormat(messageTemplate);
         return messageFormat.format(new Object[]{model});
     }
 
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<Object> handleBindException(BindException e, HttpServletRequest httpServletRequest, HandlerMethod handlerMethod) {
-        List<ErrorDetail> errorDetails = e.getBindingResult().getAllErrors().stream()
+        var errorDetails = e.getBindingResult().getAllErrors().stream()
                 .map(error -> mapToErrorDetail(handlerMethod, error))
                 .toList();
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
+        var errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
                 ErrorCode.VALIDATION_ERROR.name(), null, httpServletRequest, errorDetails);
         return buildResponseExceptionEntity(errorResponse);
     }
@@ -202,25 +202,25 @@ public class RestExceptionHandler {
     }
 
     private ErrorDetail mapObjectErrorToErrorDetail(ObjectError objectError, String apiClassName, String methodName) {
-        String keyClass = String.format(KEY_CLASS_TEMPLATE, apiClassName, methodName, objectError.getObjectName());
+        var keyClass = String.format(KEY_CLASS_TEMPLATE, apiClassName, methodName, objectError.getObjectName());
         return new ValidationErrorDetail(keyClass, null, objectError.getObjectName(), null,
                 StringUtils.capitalize(objectError.getDefaultMessage()));
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<Object> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e, HttpServletRequest httpServletRequest, HandlerMethod handlerMethod) {
-        List<ErrorDetail> errorDetails = Collections.singletonList(mapMethodArgumentTypeMismatchExceptionToErrorDetail(
+        var errorDetails = Collections.singletonList(mapMethodArgumentTypeMismatchExceptionToErrorDetail(
                 handlerMethod.getBeanType().getSimpleName(), e, handlerMethod.getMethod().getName()));
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
+        var errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
                 ErrorCode.VALIDATION_ERROR.name(), null, httpServletRequest, errorDetails);
         return buildResponseExceptionEntity(errorResponse);
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<Object> handleMissingServletRequestParameterException(MissingServletRequestParameterException e, HttpServletRequest httpServletRequest, HandlerMethod handlerMethod) {
-        List<ErrorDetail> errorDetails = Collections.singletonList(mapMissingServletRequestParameterExceptionToErrorDetail(
+        var errorDetails = Collections.singletonList(mapMissingServletRequestParameterExceptionToErrorDetail(
                 handlerMethod.getBeanType().getSimpleName(), e, handlerMethod.getMethod().getName()));
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
+        var errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,
                 ErrorCode.VALIDATION_ERROR.name(), null, httpServletRequest, errorDetails);
         return buildResponseExceptionEntity(errorResponse);
     }
@@ -238,8 +238,8 @@ public class RestExceptionHandler {
             }
         }
         if (StringUtils.isBlank(model)) {
-            model = keyClass; //delete //for local testing
-//            model = messageSource.getMessage(Const.GENERAL_FIELD, null, LocaleContextHolder.getLocale());
+//            model = keyClass; //delete //for local testing
+            model = messageSource.getMessage(Const.GENERAL_FIELD, null, LocaleContextHolder.getLocale()); //uncomment
         }
         return model;
     }

@@ -16,7 +16,6 @@ public class EnumStringValidator implements ConstraintValidator<ValidEnumString,
 
     List<String> valueList;
     boolean caseSensitive;
-    boolean checkNotBlank;
     String message;
     String messageCode;
     String[] messageParams;
@@ -30,12 +29,11 @@ public class EnumStringValidator implements ConstraintValidator<ValidEnumString,
         message = constraintAnnotation.message();
         messageCode = constraintAnnotation.messageCode();
         messageParams = constraintAnnotation.messageParams();
-        checkNotBlank = constraintAnnotation.checkNotBlank();
     }
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        if (StringUtils.isBlank(s) && !checkNotBlank) {
+        if (StringUtils.isBlank(s)) {
             return true;
         }
         boolean isValid;

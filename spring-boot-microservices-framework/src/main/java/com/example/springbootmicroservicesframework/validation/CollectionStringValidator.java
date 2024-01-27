@@ -11,30 +11,28 @@ import java.util.Collection;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class StringValidator implements ConstraintValidator<ValidString, Collection<String>> {
+public class CollectionStringValidator implements ConstraintValidator<ValidCollectionString, Collection<String>> {
 
     final ValidationUtils validationUtils;
 
     List<String> valueList;
     boolean caseSensitive;
-    boolean checkNotBlank;
     String message;
     String messageCode;
     String[] messageParams;
 
     @Override
-    public void initialize(ValidString constraintAnnotation) {
+    public void initialize(ValidCollectionString constraintAnnotation) {
         caseSensitive = constraintAnnotation.caseSensitive();
         valueList = Arrays.asList(constraintAnnotation.values());
         message = constraintAnnotation.message();
         messageCode = constraintAnnotation.messageCode();
         messageParams = constraintAnnotation.messageParams();
-        checkNotBlank = constraintAnnotation.checkNotBlank();
     }
 
     @Override
     public boolean isValid(Collection<String> s, ConstraintValidatorContext constraintValidatorContext) {
-        if (CollectionUtils.isEmpty(s) && !checkNotBlank) {
+        if (CollectionUtils.isEmpty(s)) {
             return true;
         }
         boolean isValid;
