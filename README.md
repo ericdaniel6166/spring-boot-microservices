@@ -1,5 +1,82 @@
 # spring-boot-microservices
 
+## Sequence Diagram
+
+#### Choreography-based Saga
+
+```mermaid
+sequenceDiagram
+    participant Customer
+    participant OrderService
+    participant InventoryService
+    participant PaymentService
+    participant NotificationService
+
+    Customer->>OrderService: Create Order
+    OrderService->>OrderService: Emit OrderCreated Event
+    OrderService->>Customer: Order Created
+
+    OrderService-->>InventoryService: OrderCreated Event
+    InventoryService->>InventoryService: Reserve Inventory
+    InventoryService->>InventoryService: Emit InventoryReserved Event
+    InventoryService-->>PaymentService: InventoryReserved Event
+
+    PaymentService->>PaymentService: Process Payment
+    PaymentService->>PaymentService: Emit PaymentProcessed Event
+    PaymentService-->>NotificationService: PaymentProcessed Event
+
+    NotificationService->>NotificationService: Send Confirmation Email
+    NotificationService->>Customer: Order Confirmed
+
+    Note right of OrderService: If any step fails
+
+    InventoryService-->>OrderService: InventoryReserveFailed Event
+    PaymentService-->>OrderService: PaymentFailed Event
+    OrderService->>OrderService: Emit OrderFailed Event
+    OrderService->>Customer: Order Failed
+
+    OrderService-->>InventoryService: OrderFailed Event
+    InventoryService->>InventoryService: Compensate Inventory
+
+    OrderService-->>PaymentService: OrderFailed Event
+    PaymentService->>PaymentService: Compensate Payment
+```
+#### Orchestration-based Saga
+
+```mermaid
+sequenceDiagram
+    participant Customer
+    participant Orchestrator
+    participant OrderService
+    participant InventoryService
+    participant PaymentService
+    participant NotificationService
+
+    Customer->>OrderService: Create Order
+    OrderService->>Orchestrator: Order Created
+    Orchestrator->>InventoryService: Reserve Inventory
+    InventoryService->>Orchestrator: Inventory Reserved
+    Orchestrator->>PaymentService: Process Payment
+    PaymentService->>Orchestrator: Payment Processed
+    Orchestrator->>OrderService: Confirm Order
+    OrderService->>Customer: Order Confirmed
+    Orchestrator->>NotificationService: Send Confirmation Email
+    NotificationService->>Customer: Order Confirmation Sent
+
+    Note right of Orchestrator: If any step fails
+
+    Orchestrator->>PaymentService: Compensate Payment
+    PaymentService->>Orchestrator: Payment Compensated
+    Orchestrator->>InventoryService: Compensate Inventory
+    InventoryService->>Orchestrator: Inventory Compensated
+    Orchestrator->>OrderService: Cancel Order
+    OrderService->>Customer: Order Cancelled
+    Orchestrator->>NotificationService: Send Cancellation Email
+    NotificationService->>Customer: Order Cancellation Sent
+
+
+```
+
 ## List what has been used
 
 - [Spring Boot](https://spring.io/projects/spring-boot), web framework, makes it easy to create stand-alone,
@@ -155,85 +232,3 @@ Zookeeper Host: localhost
 Zookeeper Port: 2181
 ```
 ![img_2.png](img_2.png)
-## Sequence diagrams (Updating...)
-
-- Using [mermaid.live](https://mermaid.live/)
-  [![](https://mermaid.ink/img/pako:eNrVV11v2jAU_SuWn4oaKsI3eajEVrQhtVAVNGkTUuQmlzYisVniRKNV__ucOHzkw0DQHrq-NFz7nHvse66dvGOL2YANHMDvEKgFdw558Ym3oEj8Wa4DlNdvb6-Zb4NfD8CPHAsMtHaJBVdJ8CkGBrwmEZl5ApjDRcR1bMIhBZ3NYKa_TfvZQAGJYBpHr2pIYijjgFgEfhatoTwYSTTiZjKioYATHgbocTS5G0--LWhlDbOE4LsTcOZvrmoX6knjCZf5KsmK4gRzub4VWa6IoAJqyy19FE8OfRlFonyl-ypAdVldQ47IdZyQX4LIqEvlOTTOK5ZQlGgxGoQeKFUSizuRMEiR41SC610wU6gX4OPtwJguWbFEBTINKanQ0mfeflhDa5_ZocVzsg5gyU4XUhj7ubGore_K1lWC3XbRmIM3jIjjkmcX4oWle-hy5ARyloycKMqBb3xmQRDkiqK2XLacSvCuqhkWNfl1oeHCdbzgtOv3wCqNJimKrf80_TqazXYW3rvsPGXHT4JKIo0zzoKjam1Q7bScA24AsTWEoovsERtuwvjOc_k6H-RX9O-ZVjqV6DMbajwfPZiT6dwc_hiO74df7kf_g7HOU602WGIvaqPtMS3_r8nGi98g0mmoysGxy5QjKWUWxLmIYRHXCt18kZW4_HY9ynDxvsgxaKhIsL3W05F99w5_PowmczPfxVVFnXjpqK5QedycLbh4lcgp5bU98FFpdTPmUrnmWIJjNr3ocPgXN41iMz_Z26ZCpar1sYY98D3i2OIr4j2eu8D8FTxYYEM82sRfLfCCfoh5JORstqEWNpZE3EQalhuVfnLsomtCsfGO_2CjrjcaN_2u3tGb7Va3rfcaXQ1v4ni3dzNo9Dvdfr_VHDSbrdaHht8YEyT6Ta-nd7p6uzVottpt8aBhsB2xxgf5pZN88CRZfiUA7ofw8Rer1Iu2?type=png)](https://mermaid.live/edit#pako:eNrVV11v2jAU_SuWn4oaKsI3eajEVrQhtVAVNGkTUuQmlzYisVniRKNV__ucOHzkw0DQHrq-NFz7nHvse66dvGOL2YANHMDvEKgFdw558Ym3oEj8Wa4DlNdvb6-Zb4NfD8CPHAsMtHaJBVdJ8CkGBrwmEZl5ApjDRcR1bMIhBZ3NYKa_TfvZQAGJYBpHr2pIYijjgFgEfhatoTwYSTTiZjKioYATHgbocTS5G0--LWhlDbOE4LsTcOZvrmoX6knjCZf5KsmK4gRzub4VWa6IoAJqyy19FE8OfRlFonyl-ypAdVldQ47IdZyQX4LIqEvlOTTOK5ZQlGgxGoQeKFUSizuRMEiR41SC610wU6gX4OPtwJguWbFEBTINKanQ0mfeflhDa5_ZocVzsg5gyU4XUhj7ubGore_K1lWC3XbRmIM3jIjjkmcX4oWle-hy5ARyloycKMqBb3xmQRDkiqK2XLacSvCuqhkWNfl1oeHCdbzgtOv3wCqNJimKrf80_TqazXYW3rvsPGXHT4JKIo0zzoKjam1Q7bScA24AsTWEoovsERtuwvjOc_k6H-RX9O-ZVjqV6DMbajwfPZiT6dwc_hiO74df7kf_g7HOU602WGIvaqPtMS3_r8nGi98g0mmoysGxy5QjKWUWxLmIYRHXCt18kZW4_HY9ynDxvsgxaKhIsL3W05F99w5_PowmczPfxVVFnXjpqK5QedycLbh4lcgp5bU98FFpdTPmUrnmWIJjNr3ocPgXN41iMz_Z26ZCpar1sYY98D3i2OIr4j2eu8D8FTxYYEM82sRfLfCCfoh5JORstqEWNpZE3EQalhuVfnLsomtCsfGO_2CjrjcaN_2u3tGb7Va3rfcaXQ1v4ni3dzNo9Dvdfr_VHDSbrdaHht8YEyT6Ta-nd7p6uzVottpt8aBhsB2xxgf5pZN88CRZfiUA7ofw8Rer1Iu2)
-
-```
-sequenceDiagram
-    client->>+order-service: place(orderRequest)
-    order-service->>order-service: validateRequest(orderRequest)
-    order-service->>order_service_db: saveOrder() 
-    note over order-service, order_service_db : save t_order, status PENDING
-
-    order-service->>order_service_db: saveOrderStatusHistory()
-    note over order-service, order_service_db : save order_status_history, status PENDING
-   
-    order-service->>kafka: send(orderPendingEvent)
-    order-service-->>-client: orderStatus
-    note over order-service, client: orderStatus PENDING
-    
-    inventory-service->>kafka: consume(orderPendingEvent)
-    activate inventory-service
-    
-    inventory-service->>+inventory_service_db: getInventoryInfo()
-    note over inventory-service, inventory_service_db: get from inventory, product
-    inventory_service_db-->>-inventory-service: inventoryInfo
-
-    inventory-service->>inventory-service: validateItemAvailable()
-
-    alt is valid
-        inventory-service->>kafka: send(orderProcessingEvent)
-        order-service->>kafka:consume(orderProcessingEvent)
-        activate order-service
-        order-service->>+order_service_db:updateOrder()
-        note over order-service, order_service_db : update t_order, status PROCESSING
-        
-        order-service->>+order_service_db:saveOrderStatusHistory()
-        note over order-service, order_service_db:save order_status_history, status PROCESSING
-        
-        deactivate order-service
-
-    else is not valid
-        inventory-service->>kafka: send(orderItemNotAvailableEvent)
-        deactivate inventory-service
-        order-service->>kafka:consume(orderItemNotAvailableEvent)
-        activate order-service
-        order-service->>+order_service_db:updateOrder()
-        note over order-service, order_service_db : update t_order, status ITEM_NOT_AVAILABLE
-        
-        order-service->>+order_service_db:saveOrderStatusHistory()
-        note over order-service, order_service_db:save order_status_history, status ITEM_NOT_AVAILABLE
-        
-        deactivate order-service
-    end 
-    
-
-    payment-service ->>kafka:consume(orderProcessingEvent)
-    activate payment-service
-    payment-service->>payment-service:calculateOrder()
-    payment-service->>payment_service_db:savePayment()
-    note over payment-service, payment_service_db : save payment, status PAYMENT_PROCESSING
-    payment-service->>payment_service_db:savePaymentStatusHistory()
-    note over payment-service, payment_service_db : save payment_status_history, status PAYMENT_PROCESSING
-    payment-service->>kafka: send(orderPaymentProcessingEvent)
-    deactivate payment-service
-    order-service ->>kafka:consume(orderPaymentProcessingEvent)
-    activate order-service
-    order-service->>+order_service_db:updateOrder()
-    note over order-service, order_service_db : update t_order, status PAYMENT_PROCESSING
-    order-service->>order_service_db: saveOrderStatusHistory()
-    note over order-service, order_service_db : save order_status_history, status PAYMENT_PROCESSING
-    deactivate order-service
-```
-
-[![](https://mermaid.ink/img/pako:eNp9kc1OwzAQhF-l2hOIJLITO8E-9MQVcegNRaqMvZSIxi6OgyhR3h0n4a8VYk-r0Xw7a-8A2hkECR2-9Gg13jRq51Vb21UsvW_QhnS9vnLeoE879K-NRrnaYbiblE1Qoe8uLhf7iemb2n4KW_Mg_-F-2dLIpmeJ7gf7K2wilm1PrJBAi75VjYlPHCawhvCELdYgY2uUf66htmP0qT64zdFqkMH3mEB_MCp8fQfIR7XvonpQFuQAbyAFz2hBCeM5o9dElGUCR5A0z_KqKgWlpCoZy6tiTODduTiBZGIpRgrBC87zBNA0wfnb5QTzJeaI-xmY9hg_AKxjiFc?type=png)](https://mermaid.live/edit#pako:eNp9kc1OwzAQhF-l2hOIJLITO8E-9MQVcegNRaqMvZSIxi6OgyhR3h0n4a8VYk-r0Xw7a-8A2hkECR2-9Gg13jRq51Vb21UsvW_QhnS9vnLeoE879K-NRrnaYbiblE1Qoe8uLhf7iemb2n4KW_Mg_-F-2dLIpmeJ7gf7K2wilm1PrJBAi75VjYlPHCawhvCELdYgY2uUf66htmP0qT64zdFqkMH3mEB_MCp8fQfIR7XvonpQFuQAbyAFz2hBCeM5o9dElGUCR5A0z_KqKgWlpCoZy6tiTODduTiBZGIpRgrBC87zBNA0wfnb5QTzJeaI-xmY9hg_AKxjiFc)
-```
-sequenceDiagram
-    client->>+order-service: getOrderStatus()
-    order-service->>+order_service_db:getOrderStatus()
-    order_service_db-->>-order-service: orderStatus
-    order-service-->>-client: orderStatus
-```
-
