@@ -85,17 +85,17 @@ sequenceDiagram
 
 - [Spring Boot](https://spring.io/projects/spring-boot), web framework, makes it easy to create stand-alone,
   production-grade Spring based Applications
-- [Apache Kafka](https://kafka.apache.org/), distributed and fault-tolerant stream processing system.
-- [Spring Cloud Netflix Eureka](https://spring.io/projects/spring-cloud-netflix), service discovery, 
-allows services to find and communicate with each other without hard-coding the hostname and port
-- [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway), api gateway, provide a simple, yet effective
-  way to route to APIs and provide cross-cutting concerns to them such as: security, monitoring/metrics, and resiliency.
-- [Spring Data Redis](https://docs.spring.io/spring-data/redis/reference/redis/redis-cache.html), provides an implementation of Spring Framework’s Cache Abstraction
+- [Apache Kafka](https://kafka.apache.org/), a distributed and fault-tolerant stream processing system used for event-driven communication between microservices.
+- [Spring Cloud Netflix Eureka](https://spring.io/projects/spring-cloud-netflix), a service discovery mechanism that allows microservices 
+to find and communicate with each other without hard-coding the hostname and port.
+- [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway), an api gateway that provide a simple, yet effective
+way to route to APIs and provide cross-cutting concerns to them such as: security, monitoring/metrics, and resiliency.
+- [Spring Data Redis](https://docs.spring.io/spring-data/redis/reference/redis/redis-cache.html), provides an implementation of Spring Framework’s Cache Abstraction.
 - [Spring Integration](https://docs.spring.io/spring-integration/reference/mqtt.html), provides inbound and outbound channel adapters to support the Message Queueing Telemetry Transport (MQTT) protocol.
-- [Resilience4j](https://github.com/resilience4j/resilience4j), library, helps prevent cascading failures
-  and provides mechanisms for graceful degradation and self-healing when external services experience issues
-- [Zipkin](https://zipkin.io/), distributed tracing system, provides end-to-end visibility into how requests flow through the system, 
-helping troubleshoot issues in distributed architectures
+- [Resilience4j](https://github.com/resilience4j/resilience4j), a library that helps prevent cascading failures
+  and provides mechanisms for graceful degradation and self-healing when external services experience issues.
+- [Zipkin](https://zipkin.io/), a distributed tracing system that provides end-to-end visibility into how requests flow through the system, 
+helping troubleshoot issues in distributed architectures.
 - ~~Spring Cloud Sleuth, autoconfiguration for distributed tracing~~
 - [Micrometer Tracing](https://micrometer.io/docs/tracing) with Brave, library for distributed tracing (update to Spring Boot 3.x)
 - [Docker](https://www.docker.com/) and docker-compose, for containerization
@@ -116,16 +116,23 @@ helping troubleshoot issues in distributed architectures
 
 - Microservice repositories
     - spring-boot-microservices : https://github.com/ericdaniel6166/spring-boot-microservices
-        - shared configuration files, components, etc. that can be reused in other microservices (order-service,
-          inventory-service, etc)
+      - shared configuration files, components, etc. that can be reused in other microservices (order-service,
+        inventory-service, etc)
     - discovery-server : https://github.com/ericdaniel6166/discovery-server
+      - This microservice acts as a registry for all the other microservices, allowing them to find and communicate with each other.
     - api-gateway : https://github.com/ericdaniel6166/api-gateway
+      - This microservice acts as an entry point for external requests, routing them to the appropriate microservice.
     - user-service : https://github.com/ericdaniel6166/user-service
+      - This microservice handles user-related functionality, such as creating, reading, and updating user data.
     - product-service : https://github.com/ericdaniel6166/product-service
     - order-service : https://github.com/ericdaniel6166/order-service
+      - This microservice handles order-related functionality, such as creating, reading, and updating order data.
     - inventory-service : https://github.com/ericdaniel6166/inventory-service
+      - This microservice handles inventory-related functionality, such as managing product stock levels.
     - payment-service : https://github.com/ericdaniel6166/payment-service
+      - This microservice handles payment-related functionality, such as processing payments.
     - notification-service : https://github.com/ericdaniel6166/notification-service
+      - This microservice handles notification-related functionality, such as sending confirmation and cancellation emails.
 
 - Make sure microservice repositories at directory as below, otherwise should change this for dev-environment setup
 
